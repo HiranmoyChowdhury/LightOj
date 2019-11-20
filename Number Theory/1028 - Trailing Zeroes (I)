@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+bool primes[1000000];
+int main(){
+    int t, k, i, j, sqroot=1000, nums[78500], m=0, ans;
+    ll n;
+    for(i=4; i<=1000000; i+=2) primes[i]=true;
+    nums[m++]=2;
+    for(i=3; i<=1000000; i+=2){
+        if(primes[i]==false){
+            nums[m++]=i;
+            if(i<=1000){
+                for(j=i*i; j<=1000000; j+=(i+i)){
+                     primes[j]=true;
+                }
+            }
+        }
+    }
+    cin>>t;
+    for(i=1; i<=t; i++){
+        scanf("%lld", &n);
+        ans=1;
+        for(j=0; j<m && nums[j]*nums[j]<=n; j++){
+            if(n%nums[j]==0){
+                k=1;
+                while(n%nums[j]==0){
+                    k++;
+                    n/=nums[j];
+                }
+                ans*=k;
+                }
+        }
+        if(n>1) ans*=2;
+        printf("Case %d: %d\n", i, ans-1);
+    }
+    return 0;
+}
