@@ -1,0 +1,17 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+int main(){
+    ll t, i;
+    cin>>t;
+    for(ll cas=1; cas<=t; cas++){
+        ll ax, ay, bx, by, ans=1;
+        scanf("%lld %lld %lld %lld", &ax, &ay, &bx, &by);
+        ans*=__gcd(abs(ax-bx),abs(ay-by));
+        printf("Case %lld: %lld\n", cas, ans+1);
+    }
+    return 0;
+}
