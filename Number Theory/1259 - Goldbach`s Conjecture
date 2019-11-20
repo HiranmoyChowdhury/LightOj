@@ -1,0 +1,39 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+bool primes[10000001];
+int main(){
+    bst
+    int q, a, n, b, i, j, sev[664590], k=0;
+    for(i=4; i<=10000000; i+=2){
+        primes[i]=true;
+    }
+    n=sqrt(10000001);
+    for(i=3; i<=n; i+=2){
+        if(primes[i]==false){
+            for(j=i*i; j<=10000000; j+=(i<<1)){
+                primes[j]=true;
+            }
+        }
+    }
+    for(i=2; i<=10000000; i++){
+        if(primes[i]==false) sev[k++]=i;
+    }
+    cin>>q;
+    for(i=1; i<=q; i++){
+        cin>>n;
+        cout<<"Case "<<i<<": ";
+        a=n/2; b=0;
+        for(j=0; j<k ; j++){
+            if(sev[j]>a) break;
+            if(primes[n-sev[j]]==false){
+                b++;
+            }
+        }
+        cout<<b<<endl;
+    }
+    return 0;
+}
