@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            push_back
+using namespace std;
+int cp[1000040];
+bool sieve[1000040];
+int xukha[1000040];
+int main(){
+    ll i, j, k, m=0;
+    for(i=0; i<1000040; i++) cp[i]=i;
+    for(i=2; i<1000040; i+=2){
+        cp[i]-=(cp[i]/2);
+    }
+    for(i=3; i<1000040; i+=2){
+        if(sieve[i]==false){
+            for(j=i; j<1000040; j+=i){
+                sieve[j]=true;
+                cp[j]-=(cp[j]/i);
+            }
+        }
+    }
+    ll keep=1;
+    xukha[keep]=2;
+    for(i=3; i<1000040; i++){
+        if(cp[i]>keep){
+            keep=cp[i];
+            xukha[keep]=i;
+        }
+    }
+    ll t, tc=1, n;
+    cin>>t;
+    while(t--){
+        scanf("%lld", &n);
+        ll num, ans=0;
+        for(i=0; i<n; i++){
+            scanf("%lld", &num);
+            while(xukha[num]==0){
+                num++;
+            }
+            ans+=xukha[num];
+        }
+        printf("Case %lld: %lld Xukha\n", tc++, ans);
+    }
+    return 0;
+}
