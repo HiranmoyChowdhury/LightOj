@@ -1,0 +1,42 @@
+    //                  HRanChy
+    //          Sylhet Engineering College
+    #include<bits/stdc++.h>
+    #define bst           ios_base::sync_with_stdio(0);
+    #define bug(x)        cerr<<#x<<'='<<x<<endl;
+    #define lp(i,a,b)     for(int i=a; i<=b; i++)
+    #define ll            long long int
+    using namespace std;
+    int ans[500000];
+    int main(){
+        int t, i, j, k=0, p, l, xy;
+        cin>>t;
+        int pa[t], la[t];
+        for(i=0; i<t; i++) scanf("%d %d", &pa[i], &la[i]);
+     
+        for(xy=1; xy<=t; xy++){
+            p=pa[xy-1];
+            l=la[xy-1];
+            p-=l;
+            if(p==0){
+                printf("Case %d: 1\n", xy);
+                continue;
+            }
+            int m=0;
+            int sqr=sqrt(p);
+            for(i=1; i<=sqr; i++){
+                if(p%i==0){
+                    if(i>l) ans[m++]=i;
+                    int x=p/i;
+                    if(x>l && i!=x) ans[m++]=p/i;
+                }
+            }
+            printf("Case %d:", xy);
+            if(l<p){
+                sort(ans, ans+m);
+                for(i=0; i<m; i++)  printf(" %d", ans[i]);
+            }
+            else printf(" impossible");
+            puts("");
+        }
+        return 0;
+    }
