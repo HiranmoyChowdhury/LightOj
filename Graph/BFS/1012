@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            push_back
+using namespace std;
+int main(){
+    ll t, tc=1, i, j, k;
+    cin>>t;
+    while(t--){
+        ll w, h, xs, ys, ans=1;
+        queue <int> qx, qy;
+        scanf("%lld %lld", &h, &w);
+        char field[w][h];
+        char temp ;
+        for(i=0; i<w; i++){
+           // scanf("%s",field[i]);
+           
+            for(j=0; j<h; j++){
+                //scanf("%c", &field[i][j]);
+                cin >> field[i][j];
+   // cout<<field[i][j];
+                if(field[i][j]!='.' && field[i][j]!='#'){
+                    qy.push(i);
+                    qx.push(j);
+                    //cout<<i<<j<<endl;
+                    field[i][j]='#';
+                }
+            }
+            //scanf("%c",&temp);
+            //cout << endl ;
+        }
+        while(!qx.empty()){
+            if(qx.front()>0 && field[qy.front()][qx.front()-1]=='.'){
+                qx.push(qx.front()-1);
+                qy.push(qy.front());
+                field[qy.front()][qx.front()-1]='#';
+                ans++;
+            }
+            if(qx.front()<h-1 && field[qy.front()][qx.front()+1]=='.'){
+                qx.push(qx.front()+1);
+                qy.push(qy.front());
+                field[qy.front()][qx.front()+1]='#';
+                ans++;
+            }
+            if(qy.front()>0 && field[qy.front()-1][qx.front()]=='.'){
+                qx.push(qx.front());
+                qy.push(qy.front()-1);
+                field[qy.front()-1][qx.front()]='#';
+                ans++;
+            }
+            if(qy.front()<w-1 && field[qy.front()+1][qx.front()]=='.'){
+                qx.push(qx.front());
+                qy.push(qy.front()+1);
+                field[qy.front()+1][qx.front()]='#';
+                ans++;
+            }
+            qx.pop();
+            qy.pop();
+        }
+        printf("Case %lld: %lld\n", tc++, ans);
+    }
+    return 0;
+}
+     
