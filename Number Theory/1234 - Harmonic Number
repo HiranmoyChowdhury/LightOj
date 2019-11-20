@@ -1,0 +1,32 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+double ans[100005];
+int main(){
+    ll t, tc=1, i, j, k, dhoro=1000;
+    ll m=0;
+    ans[m++]=0;
+    double num=1;
+    for(i=2; i<100000001; i+=1){
+        num+=((double)1/i);
+        if(i==dhoro){
+            ans[m++]=num;
+      //  cout<<num<<endl;
+            dhoro+=1000;
+        }
+    }
+    cin>>t;
+    while(t--){
+        scanf("%lld", &i);
+        dhoro=i/1000;
+        num=ans[dhoro];
+        for(j=(dhoro*1000)+1; j<=i; j++){
+            num+=((double)1/j);
+        }
+        printf("Case %lld: %.9lf\n", tc++, num);
+    }
+    return 0;
+}
