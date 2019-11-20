@@ -1,0 +1,28 @@
+    #include<bits/stdc++.h>
+    #define bst           ios_base::sync_with_stdio(0);
+    #define bug(x)        cerr<<#x<<'='<<x<<endl;
+    #define lp(i,a,b)     for(int i=a; i<=b; i++)
+    #define ll            long long int
+    using namespace std;
+    double ans[100005];
+    int main(){
+        ll t, tc=1, i, j, k;
+        cin>>t;
+        while(t--){
+            ll n, sum=0;
+            cin>>n;
+            ll sqroot=sqrt(n), rakho=n/1;
+            for(i=1; i<=sqroot; i++){
+                ll dhoro=n/i;
+                sum+=dhoro;
+                sum+=(rakho-dhoro)*(i-1);
+                rakho=dhoro;
+            }
+            if(rakho>sqroot){
+                ll m=n/rakho;
+                sum+=(rakho-sqroot)*m;
+            }
+            printf("Case %lld: %lld\n", tc++, sum);
+        }
+        return 0;
+    }
