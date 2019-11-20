@@ -1,0 +1,81 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+int main(){
+    int t, xy, n, k, i, j;
+    cin>>t;
+    for(xy=1; xy<=t; xy++){
+        scanf("%d %d", &n, &k);
+        k++;
+        int arr[n+1], sum=0, mx=0;
+        for(i=0; i<=n; i++){
+            cin>>arr[i];
+            sum+=arr[i];
+            mx=max(mx,arr[i]);
+        }
+        int lo=mx, hi=sum;
+        if(lo>=hi) hi+=(lo-sum+1);
+        while(1){
+            sum=0;
+            int cnt=0, mid=(hi+lo)/2;
+            for(i=0; i<=n; i++){
+                if(i==n && sum+arr[i]<=mid){
+                    cnt++;
+                }
+                else if(i==n && sum+arr[i]>mid){
+                    cnt+=2;
+                }
+                else if(sum+arr[i]<=mid){
+                    sum+=arr[i];
+                }
+                else if(sum+arr[i]>mid){
+                    cnt++;
+                    sum=arr[i];
+                }
+            }
+            sum=0;
+            if(lo==mid){
+                int a[n+1], ans[n+1], m=0;
+                if(cnt>k) mid=hi;
+                for(i=0; i<=n; i++){
+                    if(i==n && sum+arr[i]<=mid) a[m++]=sum+arr[i];
+                    else if(i==n && sum+arr[i]>mid){
+                        a[m++]=sum; a[m++]=arr[i];
+                    }
+                    else if(sum+arr[i]<=mid) sum+=arr[i];
+                    else if(sum+arr[i]>mid){
+                        a[m++]=sum;
+                        sum=arr[i];
+                    }
+                }
+                mid=0;
+                for(i=k-1, j=m-1; i>=0; i--){
+                    if(i-j>0){
+                        if(arr[n]!=a[j]){
+                            ans[i]=arr[n];
+                            a[j]-=ans[i];
+                        }
+                        else ans[i]=a[j--];
+                        n--;
+                    }
+                    else{
+                        ans[i]=a[j--];
+                    }
+                    mid=max(mid,ans[i]);
+                }
+                printf("Case %d: %d\n", xy,mid);
+                for(i=0; i<k; i++) printf("%d\n", ans[i]);
+                break;
+            }
+            if(cnt<=k){
+                hi=mid;
+            }
+            else lo=mid;
+        }
+ 
+    }
+    return 0;
+}
