@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            push_back
+using namespace std;
+int main(){
+    bst
+    ll i, j, k, l;
+    ll n, lo, hi;
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        cin>>n;
+        lo=n/10;
+        hi=lo+1000000000000000000;
+        ll mid, ans[5000], m=0;;
+        k=100;
+        while(k--){
+            mid=lo+hi;
+            mid/=2;
+            ll d=n+mid;
+            ll sq=d/10;
+            if((d-sq)>n){
+                hi=mid;
+            }
+            else if((d-sq)<n){
+                lo=mid;
+            }
+            else{
+                break;
+            }
+        }
+        k=mid;
+        while(1){
+            ll d=n+k;
+            ll sq=d/10;
+            if((d-sq)==n){
+                ans[m++]=d;
+                k++;
+            }
+            else break;
+        }
+        k=mid-1;
+        while(1){
+            ll d=n+k;
+            ll sq=d/10;
+            if((d-sq)==n){
+                ans[m++]=d;
+                k--;
+            }
+            else break;
+        }
+        sort(ans, ans+m);
+        printf("Case %lld: ", tc++);
+        for(i=0; i<=m-2; i++) printf("%lld ", ans[i]);
+        printf("%lld\n", ans[m-1]);
+    }
+    return 0;
+}
