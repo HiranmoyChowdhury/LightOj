@@ -1,0 +1,34 @@
+    #include<bits/stdc++.h>
+    #define bst           ios_base::sync_with_stdio(0);
+    #define bug(x)        cerr<<#x<<'='<<x<<endl;
+    #define lp(i,a,b)     for(int i=a; i<=b; i++)
+    #define ll            long long int
+    using namespace std;
+    int main() {
+        bst
+        int n, k, i, j, size, q, fact[28];
+        cin>>q;
+        string s;
+        fact[0]=1;
+        for(i=1; i<=4; i++) fact[i]=fact[i-1]*i;
+        for(int x=1; x<=q; x++){
+            cout<<"Case "<<x<<":"<<endl;
+            s="ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            cin>>n>>k;
+            for(i=0; i<n; i++) cout<<s[i];
+            cout<<endl;
+            int z;
+            if(n>4) z=k;
+            else z=min(fact[n], k);
+            for(i=1; i<z; i++){
+                next_permutation(s.begin(), s.begin()+n);
+                for(j=0; j<n; j++) cout<<s[j];
+                cout<<endl;
+            }
+           
+           
+           
+           
+        }
+        return 0;
+    }
