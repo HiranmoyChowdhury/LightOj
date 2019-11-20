@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+bool primes[1000];
+int main(){
+    int n, i, j, k, l, t, g=0;
+    int divisors[1004];
+    for(i=1; i<1001; i++) divisors[i]=1;
+    for(i=2; i<=1000; i++){
+        for(j=i; j<=1000; j+=i) divisors[j]++;
+    }
+    int serial[1005];
+    for(i=1; i<=1000; i++){
+        k=1005;
+        for(j=1; j<=1000; j++){
+            if(divisors[j]<k){
+                k=divisors[j];
+                l=j;
+            }
+            else if(divisors[j]==k && j>=l){
+                l=j;
+            }
+        }
+        divisors[l]=1000000;
+        serial[i]=l;
+    }
+    cin>>t;
+    for(i=1; i<=t; i++){
+        scanf("%d", &n);
+        printf("Case %d: %d\n", i, serial[n]);
+    }
+    return 0;
+}
