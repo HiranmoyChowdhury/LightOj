@@ -1,0 +1,52 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            push_back
+using namespace std;
+int num[1000020];
+bool sieve[1000020];
+int main(){
+    ll i, j, k, m=0;
+    num[m++]=2;
+    for(i=3; i<1000020; i+=2){
+        if(sieve[i]==false){
+            num[m++]=i;
+            for(j=i*i; j<1000020; j+=(i+i)){
+                sieve[j]=true;
+            }
+        }
+    }
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll a, b;
+        scanf("%lld %lld", &a, &b);
+        if(sqrt(a)<=b){
+            printf("Case %lld: 0\n", tc++);
+        }
+        else{
+            ll d=1, limit=sqrt(a), temp=a;
+            for(i=0; num[i]<=limit; i++){
+                if(temp%num[i]==0){
+                    k=1;
+                    while(temp%num[i]==0){
+                        temp/=num[i];
+                        k++;
+                    }
+                    limit=sqrt(temp);
+                    d*=k;
+                }
+            }
+           // cout<<temp<<endl;
+            if(temp>1) d*=2;
+            d/=2;
+            for(i=1; i<b; i++){
+                if(!(a%i)) d--;
+            }
+            printf("Case %lld: %lld\n", tc++, d);
+        }
+    }
+    return 0;
+}
