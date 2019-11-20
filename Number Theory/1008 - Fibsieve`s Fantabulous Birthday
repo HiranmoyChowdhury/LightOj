@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            push_back
+using namespace std;
+bool sieve[1000006];
+int primes[1000000];
+int main(){
+    ll i, j, k, sqr;
+    ll t, tc=1, s;
+    cin>>t;
+    while(t--){
+        scanf("%lld", &s);
+        ll x, y;
+        sqr=ceil(sqrt(s));
+        if((sqr*sqr)-s<sqr){
+            x=sqr;
+            y=(sqr*sqr)-s+1;
+        }
+        else{
+            x=2*sqr-pow(sqr,2)+s-1;
+            y=sqr;
+        }
+        if(sqr%2==1) swap(x,y);
+        printf("Case %lld: %lld %lld\n", tc++, x, y);
+    }
+    return 0;
+}
