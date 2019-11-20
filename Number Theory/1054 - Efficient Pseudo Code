@@ -1,0 +1,72 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+bool primes[65537];
+ll bigmod(ll a, ll b, ll m){
+    if(b==1) return a%m;
+    ll x=bigmod(a, b/2, m);
+    x=(x*x)%m;
+    if(b%2==1) x=(x*a)%m;
+    return x;
+}
+int main(){
+    ll n, i, j, k, t;
+    ll m;
+    ll p_nums[6543], l=0, mod=1000000007;  //6543 is the number of prime num before sqrt(2^32)
+    ll num=65536, limit;
+    limit=sqrt(num);
+    for(i=4; i<=num; i+=2) primes[i]=true;
+    p_nums[l++]=2;
+    for(i=3; i<=num; i+=2){
+        if(primes[i]==false){
+            p_nums[l++]=i;
+            for(j=i*i; j<=num; j+=(i+i)) primes[j]=true;
+        }
+    }
+    cin>>t;
+    for(int cas=1; cas<=t; cas++){
+        scanf("%lld %lld", &n, &m);
+        if(n%mod==0 || m==0){
+            printf("Case %d: 1\n", cas);
+            continue;
+        }
+        ll ans=1;
+        for(i=0; p_nums[i]<=n && i<l; i++){
+            if(n%p_nums[i]==0){
+                k=0;
+                while(n%p_nums[i]==0){
+                    k++;
+                    n/=p_nums[i];
+                }
+                k*=m;
+                ll up=bigmod(p_nums[i], k+1, mod);
+                if(up==0) up=mod-1;
+                else up--;
+                ll down=bigmod(p_nums[i]-1, 1, mod);
+                down=bigmod(down, mod-2, mod);
+                down%=mod;
+                ll carry=up*down;
+                carry%=mod;
+                ans*=carry;
+                ans%=mod;
+            }
+        }
+        if(n>1){
+            ll up=bigmod(n, m+1, mod);
+            if(up==0) up=mod-1;
+            else up--;
+            ll down=bigmod(n-1, 1, mod);
+            down=bigmod(down, mod-2, mod);
+            down%=mod;
+            ll carry=up*down;
+            carry%=mod;
+            ans*=carry;
+        }
+        ans%=mod;
+        printf("Case %d: %lld\n", cas, ans);
+    }
+    return 0;
+}
