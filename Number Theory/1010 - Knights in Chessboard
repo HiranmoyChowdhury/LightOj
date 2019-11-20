@@ -1,0 +1,37 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            push_back
+using namespace std;
+int main(){
+    ll t, tc=1, m, n, i,j;
+    cin>>t;
+    while(t--){
+        ll x, y;
+        scanf("%lld %lld", &x,&y);
+        m=min(x,y);
+        n=max(x,y);
+        ll ans;
+        ans=(m/2);
+        if(m%2) ans++;
+        ans*=n;
+        if(m%2){
+            j=n/2;
+            ans-=j;
+        }
+        if(m==1) ans=n;
+        else if(m==2){
+            if(n<3) ans=n*2;
+            else{
+                ll l=n/2;
+                ans=n/2;
+                ans*=2;
+                if(n%2 || l%2) ans+=2;
+            }
+        }
+        printf("Case %lld: %lld\n", tc++, ans);
+    }
+    return 0;
+}
