@@ -1,0 +1,35 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+int main(){
+    ll t, n, i, j, k, l, cas=1;
+    cin>>t;
+    while(t--){
+        scanf("%lld", &n);
+        if(n<4){
+            printf("Case %lld: 0\n", cas++);
+            continue;
+        }
+        ll sqroot=sqrt(n), ans=0, rakho=n/2;
+        for(i=2; i<=sqroot; i++){
+            ll dhoro=n/i;
+            ans+=((dhoro-1)*i);
+            ll haha=(i-2)*(dhoro+1+rakho)*(rakho-dhoro);
+            ans+=(haha/2);
+     //       bug(i) bug(dhoro) bug(rakho)
+      //      bug(((i-2)*(dhoro+1+rakho)*(rakho-dhoro))/2)
+            rakho=dhoro;
+        }
+        if(rakho>sqroot){
+            for(i=sqroot+1; i<=rakho; i++){
+                ll dhoro=n/i;
+                ans+=((dhoro-1)*i);
+            }
+        }
+        printf("Case %lld: %lld\n", cas++, ans);
+    }
+    return 0;
+}
