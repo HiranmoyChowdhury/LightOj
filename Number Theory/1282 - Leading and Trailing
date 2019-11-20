@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            push_back
+using namespace std;
+long long bigmod(ll n, ll k, ll mod){
+    if(k==1) return n%mod;
+    ll x=bigmod(n, k/2, mod);
+    x=(x*x)%mod;
+    if(k%2) x=(x*n)%mod;
+    return x;
+}
+double ten(double n){
+    while(n>=1000.0){
+        n/=10.0;
+    }
+    return n;
+}
+double divide(double n, double k){
+    if(k==1.0) return ten(n);
+    ll z=k;
+    ll y=z/2;
+    double m=y;
+    double x=divide(n, m);
+    x=ten(x*x);
+    if(z%2) x=ten(x*n);
+    return x;
+}
+int main(){
+    ll i, j, n, k, t, tc=1;
+    scanf("%lld", &t);
+    while(t--){
+        scanf("%lld %lld", &n , &k);
+        ll last, first;
+        last=bigmod(n, k, 1000);
+        double x=n, y=k;
+        first=divide(x, y);
+        ll m=0;
+        ll z=last;
+        j=0;
+        while(z){
+            m++;
+            z/=10;
+        }
+        printf("Case %lld: %lld ", tc++, first);
+        while(m<3){
+            cout<<0;
+            m++;
+        }
+        if(last) printf("%lld", last);
+        printf("\n");
+    }
+    return 0;
+}
