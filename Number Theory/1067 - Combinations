@@ -1,0 +1,46 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+ll bigmod(ll a, ll b, ll m){
+    if(b==1) return a%m;
+    ll x=bigmod(a, b/2, m);
+    x=(x*x)%m;
+    if(b%2==1) x=(x*a)%m;
+    return x;
+}
+int main(){
+    ll t, n, k, i, j;
+    ll mod=1000003;
+    ll f[1000002];
+    f[0]=1;
+    for(i=1; i<=1000000; i++){
+        f[i]=i;
+        f[i]*=f[i-1];
+        f[i]%=mod;
+    }
+    cin>>t;
+    for(i=1; i<=t; i++){
+        scanf("%lld %lld", &n, &k);
+        if(k==0){
+            printf("Case %lld: 1\n", i);
+            continue;
+        }
+        ll r, nr;
+        r=bigmod(f[k], 1, mod);
+        r=bigmod(r, mod-2, mod);
+        nr=bigmod(f[n-k], 1, mod);
+        nr=bigmod(nr, mod-2, mod);
+        nr%=mod;    r%=mod;
+        ll ncr=f[n]*r;
+        ncr%=mod;
+        ncr*=nr;
+        ncr%=mod;
+        printf("Case %lld: %lld\n", i, ncr);
+ 
+ 
+    }
+    return 0;
+}
