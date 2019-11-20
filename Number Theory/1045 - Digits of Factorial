@@ -1,0 +1,24 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            push_back
+using namespace std;
+double base2[1000006];
+int main(){
+    ll i, j, k, l, n;
+    base2[0]=base2[1]=log(1);
+    for(i=2; i<1000006; i++){
+        base2[i]=base2[i-1]+log(i);
+    }
+    ll t, tc=1, base;
+    cin>>t;
+    while(t--){
+        scanf("%lld %lld", &n, &base);
+        ll ans=ceil(base2[n]/log(base));
+        if(ans==0) ans=1;
+        printf("Case %lld: %lld\n", tc++, ans);
+    }
+    return 0;
+}
