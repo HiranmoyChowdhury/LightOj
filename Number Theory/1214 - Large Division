@@ -1,0 +1,33 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+long long divisible(string a, long long b, long long k){
+    long long dhoro=0, rakho=0, i, j, len=a.size();
+    for(i=k; i<len; i++){
+        dhoro*=10;
+        dhoro+=(a[i]-'0');
+        if(dhoro>=b){
+            dhoro%=b;
+        }
+    }
+    if(dhoro) return 0;
+    else return 1;
+}
+int main(){
+    ll t, tc=1, b, i, j, k;
+    string a;
+    cin>>t;
+    while(t--){
+        cin>>a>>b;
+        k=0;
+        if(a[0]=='-') k=1;
+        if(divisible(a, b, k)){
+            printf("Case %lld: divisible\n", tc++);
+        }
+        else printf("Case %lld: not divisible\n", tc++);
+    }
+    return 0;
+}
