@@ -1,0 +1,36 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+int main(){
+    double a, b, j, k;
+    int t;
+    cin>>t;
+    for(int xy=1; xy<=t; xy++){
+        char c;
+        cin>>a>>c>>b;
+        int i=50;
+        double lo=0.0, mid, hi=400.0, pm, pi=acos(-1.0), x=a, y=b;
+        while(i--){
+            mid=(hi+lo)/2.0;
+            a=a*mid; b=b*mid;
+            double red=acos(b/(sqrt(pow(a,2.0)+pow(b,2.0))));
+            pm=(180.0-((2.0*red*180)/pi))/360.0;
+            pm*=(pi*sqrt(pow(a,2.0)+pow(b,2.0)));
+            pm+=a;
+            pm*=2.0;
+            a=x; b=y;
+            if(pm>400.0) hi=mid;
+            else if(pm<400.0) lo=mid;
+            else if(pm==400 || i==1){
+                lo=mid;
+                break;
+            }
+        }
+        a=a*lo; b=b*lo;
+        printf("Case %d: %.9lf %.9lf\n", xy, a, b);
+    }
+    return 0;
+}
