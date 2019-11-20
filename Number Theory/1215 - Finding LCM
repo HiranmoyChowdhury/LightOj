@@ -1,0 +1,48 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+ll sieve[1000002];
+int main(){
+    ll t, tc=1, a, b, l, i, j;
+    ll primes[500000], m=0;
+    for(i=4; i<=1000000; i+=2) sieve[i]=true;
+    primes[m++]=2;
+    for(i=3; i<1000000; i++){
+        if(sieve[i]==false){
+            primes[m++]=i;
+            for(j=i*i; j<=1000; j+=(i+i)) sieve[j]=true;
+        }
+    }
+    cin>>t;
+    while(t--){
+        cin>>a>>b>>l;
+        if(l%a!=0 || l%b!=0){
+            printf("Case %lld: impossible\n", tc++);
+            continue;
+        }
+        ll c=1, gcd=__gcd(a,b);
+        ll lcm=(a*b)/gcd;
+        ll ans=l/lcm;
+        ll take=sqrt(ans);
+        for(i=0; primes[i]<=take; i++){
+            if(ans%primes[i]==0){
+                while(ans%primes[i]==0) ans/=primes[i];
+                while(l%primes[i]==0){
+                    c*=primes[i];
+                    l/=primes[i];
+                }
+            }
+        }
+        if(ans>1){
+            while(l%ans==0){
+                    c*=ans;
+                    l/=ans;
+            }
+        }
+        printf("Case %lld: %lld\n", tc++, c);
+    }
+    return 0;
+}
