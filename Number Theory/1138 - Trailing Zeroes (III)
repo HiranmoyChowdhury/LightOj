@@ -1,0 +1,30 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+using namespace std;
+int main(){
+    ll t, q, i, j, tcase=1, k;
+    scanf("%lld", &t);
+    while(t--){
+        cin>>q;
+        ll xy=50, lo=5, hi=1000000000, test;
+        while(xy--){
+            ll mid=(lo+hi)/2;
+            test=0;
+            for(i=1; pow(5, i)<=mid; i++){
+                test+=(mid/pow(5,i));
+            }
+            if(test>=q) hi=mid;
+            else lo=mid;
+        }
+        test=0;
+        for(i=1; pow(5, i)<=hi; i++){
+            test+=(hi/pow(5,i));
+        }
+        if(test==q) printf("Case %lld: %lld\n", tcase++, hi);
+        else printf("Case %lld: impossible\n", tcase++);
+    }
+    return 0;
+}
