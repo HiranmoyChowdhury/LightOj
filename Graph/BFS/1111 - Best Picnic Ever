@@ -1,0 +1,51 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            emplace_back
+using namespace std;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll k, m, n;
+        scanf("%lld %lld %lld", &k, &n, &m);
+        ll i, j, l;
+        ll pos[k+1];      // position of k people
+        ll jeteparbe[n+2]={};
+        for(i=0; i<k; i++) scanf("%lld", &pos[i]);
+        vector<ll> way[n+1];
+        for(i=0; i<m; i++){
+            ll u, v;
+            scanf("%lld %lld", &u, &v);
+            way[u].pb(v);        // one way road
+        }
+        ll ans=0;
+        for(i=0; i<k; i++){
+            ll src=pos[i];
+            bool iv[n+1]={};    // is visited
+            queue<ll> go;
+            go.push(src); iv[src]=true;
+            while(!go.empty()){
+                ll first=go.front();      // to find the first number, compiler took too much time
+                jeteparbe[first]++;
+                ll siz=way[first].size();  // it can be responsible for TLE
+                for(j=0; j<siz; j++){
+                    ll x=way[first][j];     // save some more time
+                    if(iv[x]==false){
+                        iv[x]=true;
+                        go.push(x);
+                    }
+                }
+                go.pop();
+            }
+        }
+        for(i=1; i<=n; i++){
+            if(jeteparbe[i]>=k) ans++;    // to see, where all people can reach
+        }
+        printf("Case %lld: %lld\n", tc++, ans);
+    }
+    return 0;
+}
+
