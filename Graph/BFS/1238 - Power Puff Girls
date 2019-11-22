@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            emplace_back
+using namespace std;
+char position[22][22];
+long long bfs(ll m, ll n, ll srcx, ll srcy, ll destx, ll desty){
+    bool iv[m][n]={};          // is_visited[m][n]
+    queue<ll> conctx, concty;
+    ll ans=0;
+    conctx.push(srcx); conctx.push(500); iv[srcy][srcx]=true;
+    concty.push(srcy); concty.push(500);    // 500 for divide all level from eachother
+    while(1){
+        ll x=conctx.front();
+        ll y=concty.front();
+        if(destx==x && desty==y) break;
+        else if(x==500){
+            conctx.pop();
+            concty.pop();
+            conctx.push(500);
+            concty.push(500);
+            ans++;
+        }
+        else{
+            if(iv[y][x+1]==false && position[y][x+1]!='#' && position[y][x+1]!='m'){
+                conctx.push(x+1); concty.push(y);
+                iv[y][x+1]=true;
+            }
+            if(iv[y][x-1]==false && position[y][x-1]!='#' && position[y][x-1]!='m'){
+                conctx.push(x-1); concty.push(y);
+                iv[y][x-1]=true;
+            }
+            if(iv[y+1][x]==false && position[y+1][x]!='#' && position[y+1][x]!='m'){
+                conctx.push(x); concty.push(y+1);
+                iv[y+1][x]=true;
+            }
+            if(iv[y-1][x]==false && position[y-1][x]!='#' && position[y-1][x]!='m'){
+                conctx.push(x); concty.push(y-1);
+                iv[y-1][x]=true;
+            }
+            conctx.pop();
+            concty.pop();
+        }
+    }
+
+    return ans;
+
+}
+int main(){
+    ll t, tc=1, i , j, k;
+    cin>>t;
+    while(t--){
+        ll n, m, hx, hy, ax, ay, bx, by, cx, cy, ans=0;
+        scanf("%lld %lld", &m, &n);
+        for(i=0; i<m; i++){
+            scanf("%s", position[i]);
+            for(j=0; j<n; j++){
+               // cin>>position[i][j];
+                if(position[i][j]=='h'){
+                    hx=j; hy=i;
+                }
+                else if(position[i][j]=='a'){
+                    ax=j; ay=i;
+                }
+                else if(position[i][j]=='b'){
+                    bx=j; by=i;
+                }
+                else if(position[i][j]=='c'){
+                    cx=j; cy=i;
+                }
+            }
+        }
+        ans=bfs(m, n, ax, ay, hx, hy);                   // distance of 'h' from 'a', 'b', 'c'
+        ans=max(ans, bfs(m, n, bx, by, hx, hy));
+        ans=max(ans, bfs(m, n, cx, cy, hx, hy));
+
+
+
+        printf("Case %lld: %lld\n", tc++, ans);
+    }
+    return 0;
+}
+
