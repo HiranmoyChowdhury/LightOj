@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define pb            emplace_back
+using namespace std;
+ll lalax[8]={1, 1, 2, 2, -1, -1, -2, -2};  //where to go 
+ll lalay[8]={2, -2, 1, -1, 2, -2, 1, -1};
+char arr[15][15];
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll m, n, i, j, l;
+        scanf("%lld %lld", &m, &n);
+        vector<ll> kx, ky, value;
+        for(i=0; i<m; i++){
+            scanf("%s", arr[i]);
+            for(j=0; j<n; j++){
+                if(arr[i][j]>='1' && arr[i][j]<='9'){
+                    kx.pb(j);  //current position of knight
+                    ky.pb(i);
+                    value.pb(arr[i][j]-'0');
+                }
+            }
+        }
+        ll keep[m+2][n+2];  //here is the answer
+        for(i=0; i<=m; i++){
+            for(j=0; j<=n; j++) keep[i][j]=0;
+        }
+        for(int k=0; k<kx.size(); k++){
+            bool check[m+2][n+2]={};
+            queue<ll> qx, qy;
+            qx.push(kx[k]); qy.push(ky[k]); //pushing knights position
+            check[ky[k]][kx[k]]=true;
+            ll rakho[m+2][n+1];
+            for(i=0; i<=m; i++) for(j=0; j<=n; j++) rakho[i][j]=0;
+            while(qx.empty()==false){
+                for(i=0; i<8; i++){
+                    ll x=qx.front()+lalax[i], y=qy.front()+lalay[i];
+                    if(x<n && x>=0 && y<m && y>=0 && check[y][x]==false && keep[y][x]!=-1){
+                        check[y][x]=true;
+                        qx.push(x); qy.push(y);
+                        rakho[y][x]=rakho[qy.front()][qx.front()]+1; //how many jumps require
+                        ll dhoro=rakho[y][x]/value[k];      //how many moves require
+                        if(rakho[y][x]%value[k]>0) dhoro++;
+                        keep[y][x]+=dhoro;
+                    }
+                }
+                qx.pop(); qy.pop();
+            }
+            for(i=0; i<m; i++) for(j=0; j<n; j++) if(check[i][j]==false) keep[i][j]=-1; //this knight can't enter in this position, then this position should be ban
+        }
+        ll ans=1000000;
+        for(i=0; i<m; i++){
+            for(j=0; j<n; j++){
+                if(keep[i][j]!=-1) ans=min(ans, keep[i][j]);
+            }
+        }
+        printf("Case %lld: ", tc++);
+        if(ans==1000000) puts("-1");
+        else printf("%lld\n", ans);
+    }
+    return 0;
+}
