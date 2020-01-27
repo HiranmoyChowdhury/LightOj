@@ -1,0 +1,86 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define ep            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+ll x[2]={1, -1};
+int main(){
+    bst
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        string s, e;   // start and end
+        map<string, ll> stop; //we can't go in this string
+        map<string, ll> dist;   // distance from the starting string
+        cout<<"Case "<<tc++<<": ";
+        cin>>s>>e;
+        ll n, i, j, k, l;
+        cin>>n;
+        for(i=0; i<n; i++){
+            string a, b, c;
+            cin>>a>>b>>c;
+            ll sa=a.size(), sb=b.size(), sc=c.size();
+            for(j=0; j<sa; j++){
+                for(k=0; k<sb; k++){
+                    for(l=0; l<sc; l++){
+                        string str;
+                        str.pb(a[j]); str.pb(b[k]); str.pb(c[l]);
+                        stop[str]=1;
+                    }
+                }
+            }
+        }
+        if(stop[s]==1 || stop[e]==1){
+            cout<<-1<<endl;
+            continue;
+        }
+        if(s==e){
+            cout<<0<<endl;
+            continue;
+        }
+        queue<char> a, b, c;  //  where we can reach s[0], s[1], s[2];
+        a.push(s[0]); b.push(s[1]); c.push(s[2]);
+        bool flag=false;
+        while(!a.empty()){
+                string str;
+                str.pb(a.front()); str.pb(b.front()); str.pb(c.front());
+                if(str==e){
+                    flag=true;
+                    break;
+                }
+                for(i=0; i<3; i++){
+                     for(j=0; j<2; j++){    // we can go up & down... that is x[0] & x[1] respectively;
+                            string st;
+                            if(i==1) st.pb(str[0]);
+                            else if(i==2){
+                                st.pb(str[0]); 
+                                st.pb(str[1]);
+                            }
+                            if(str[i]=='a' && x[j]==-1) st.pb('z');
+                            else if(str[i]=='z' && x[j]==1) st.pb('a');
+                            else st.pb(str[i]+x[j]);
+                        
+                            if(i==0){
+                                st.pb(str[1]); st.pb(str[2]);
+                            }
+                            else if(i==1) st.pb(str[2]);
+                            if(stop[st]==0){
+                                stop[st]=1;
+                                dist[st]=dist[str]+1;
+                                a.push(st[0]); b.push(st[1]); c.push(st[2]);
+                            }
+                    }
+                }
+                a.pop(); b.pop(); c.pop();
+            }
+
+        if(flag==false) cout<<-1<<endl;
+        else cout<<dist[e]<<endl;
+    }
+
+    return 0;
+}
