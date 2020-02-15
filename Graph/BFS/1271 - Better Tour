@@ -1,0 +1,75 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+ll mx=50009;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, i, j, k, fst, lst;
+        scanf("%lld" , &n);
+        vector<ll> path[mx];
+        ll u , v;
+        scanf("%lld", &u);
+        fst=u;
+        for(i=0; i<n-1; i++){
+            scanf("%lld", &v);
+            path[v].eb(u);
+            path[u].eb(v);
+            u=v;
+        }
+        lst=u;
+        vector<ll> previous[mx];   // sortest paths
+        queue<ll> q;
+        q.push(lst);
+        bool check[mx]={};
+        check[lst]=true;
+        while(!q.empty()){
+            q.push(999999);  // differentiate all level
+            bool flag=false;
+            vector<ll> nisi;
+            while(q.front()!=999999){// working on just in one level
+                ll x=q.front();
+ 
+                nisi.eb(x);   // all point of one level
+ 
+                ll limit=path[x].size();
+                for(i=0; i<limit; i++){
+                    ll keep=path[x][i];
+                    if(check[keep]==true) continue;
+                    previous[keep].eb(x);
+                    q.push(keep);
+                    if(keep==fst) flag=true;
+                }
+                q.pop();
+            }
+            ll siz_nisi=nisi.size();
+            for(i=0; i<siz_nisi; i++){
+                ll x=nisi[i];           //marking all point, which level we worked for
+                ll limit=path[x].size();
+                for(j=0; j<limit; j++) check[path[x][j]]=true;
+            }
+            if(flag==true) break;  // if we find first element in this level
+            q.pop();
+        }
+        ll x=fst;
+        printf("Case %lld:\n", tc++);
+        while(1){
+            if(x==lst){
+                printf("%lld\n", x);
+                break;
+            }
+            printf("%lld ", x);
+            ll limit=previous[x].size(), y=9999999;
+            for(i=0; i<limit; i++) y=min(y, previous[x][i]); //finding lexicographically smaller way from shortest paths
+            x=y;
+        }
+    }
+    return 0;
+}
