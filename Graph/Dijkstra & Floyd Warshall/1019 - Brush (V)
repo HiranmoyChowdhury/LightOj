@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, m, i, j, k;
+        cin>>n>>m;
+        map<ll, vector<pair<ll, ll>>> path;
+        for(i=0; i<m; i++){
+            ll x, y, w;
+            scanf("%lld %lld %lld", &x, &y, &w);
+            path[x].pb({y, w});
+            path[y].pb({x, w});
+        }
+        priority_queue<pair<ll, ll>> pq;
+        
+        pq.push({0, 1}); // 0 is distance and 1 dis source..it will sort in order of distance
+        
+        vector<ll> dist;
+        for(i=0; i<=n; i++) dist.pb(99999999999); // took an infinity value
+        dist[1]=0;
+        while(!pq.empty()){
+            ll point=pq.top().second;
+            pq.pop();
+            ll limit=path[point].size();
+            for(i=0; i<limit; i++){
+                ll x=path[point][i].first, w=path[point][i].second;
+                if((dist[point] + w) < dist[x]){
+                    dist[x]=dist[point]+w;
+                    pq.push({w, x});
+                }
+            }
+        }
+        if(dist[n]>999999999) printf("Case %lld: Impossible", tc++);
+        else printf("Case %lld: %lld", tc++, dist[n]);
+        cout<<endl;
+    }
+
+
+    return 0;
+}
