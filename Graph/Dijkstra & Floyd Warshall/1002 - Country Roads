@@ -1,0 +1,57 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, m, i, j, k;
+        scanf("%lld %lld", &n, &m);
+        map<ll, vector< pair<ll, ll> > > mp;
+        for(i=0; i<m; i++){
+            ll x,y,w;
+            scanf("%lld %lld %lld", &x, &y, &w);
+            mp[x].pb({y, w}); // path and weight
+            mp[y].pb({x, w});
+        }
+        ll src;
+        cin>>src;
+        
+        vector<ll> dist;
+        for(i=0; i<=n; i++) dist.eb(999999999); // every distance is infinity now
+        dist[src]=0;
+        priority_queue<pair<ll,ll>> pq;
+        pq.push({0, src});
+        while(!pq.empty()){
+            ll x=pq.top().second, w=pq.top().first;
+            pq.pop();
+            ll limit=mp[x].size();
+            for(i=0; i<limit; i++){
+                ll num=mp[x][i].first, d=mp[x][i].second;
+                ll boshabo=max(dist[x], d);   //max distance to arive in this point in a certain path
+                if(boshabo<dist[num]){
+                    dist[num]=boshabo;
+                    pq.push({d, num});
+                }
+            }
+            
+        }
+        
+        printf("Case %lld:\n", tc++);
+        
+        for(i=0; i<n; i++){
+            if(dist[i]>9999999) printf("Impossible\n");
+            else printf("%lld\n", dist[i]);
+        }
+        
+    }
+    
+    
+    return 0;
+}
