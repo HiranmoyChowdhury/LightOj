@@ -1,0 +1,96 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+bool prime[50];
+ll dest=12345678;  ///destination
+map<ll, ll> dekhbo;
+ll bfs(ll arr[], bool check[]){
+    ll ini=0, root;
+    for(int i=0; i<8; i++){
+        ini*=10;
+        ini+=abs(arr[i]);
+    }    // if we convert this array into a number;
+    root=ini;
+
+    queue<ll> q;
+    q.push(ini);
+    while(!q.empty()){
+        ll mari=q.front(), hobena=q.front();
+        for(int i=0; i<8; i++){
+            ll x=mari%10; mari/=10;
+            ll marj=q.front();
+            for(int j=0; j<8; j++){
+                ll y=marj%10; marj/=10;
+                if(((check[x] && !check[y]) || (!check[x] && check[y])) && prime[x+y]==false){ ///check==false means value is positive
+                    ll new1=0, new2=0, m=1; ini=q.front();
+                    while(m<=10000000){
+                        ll last=ini%10;
+                        ini/=10;
+                        if(last==y) continue;
+                        else if(last==x){
+                            new1+=m*y; new2+=m*x;
+                            m*=10;
+                            new1+=m*x; new2+=m*y;
+                            m*=10;
+                            continue;
+                        }
+                        new1+=last*m; new2+=last*m;  ///doing this to achive a new array
+                        m*=10;
+                    }
+                    if(dekhbo[new1]==0 && new1!=root){
+                        q.push(new1);
+                        dekhbo[new1]=dekhbo[hobena]+1;
+                    }
+
+                    if(dekhbo[new2]==0 && new2!=root){
+                        q.push(new2);
+                        dekhbo[new2]=dekhbo[hobena]+1;
+                    }
+                    if(new1==dest || new2==dest) return 1;
+                }
+            }
+        }
+        q.pop();
+    }
+    return 0;
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    for(int i=3; i<=20; i++){
+        if(i%2==0) prime[i]=true;
+        else for(int j=i+i; j<=20; j+=i) prime[j]=true;
+    }
+    while(t--){
+        dekhbo.clear();
+        ll n=8, i, j, l;
+        ll arr[n];
+        for(i=0; i<n; i++) scanf("%lld", &arr[i]);
+        bool check[9]={};
+        ll ini=0;
+        for(i=0; i<n; i++){
+            ini*=10;
+            ini+=abs(arr[i]);
+            if(arr[i]<0) check[abs(arr[i])]=true;   /// to check its positive or negative
+        }
+        printf("Case %lld: ", tc++);
+        if(ini==dest){
+            cout<<0<<endl;
+            continue;
+        }
+
+        ll nana=bfs(arr, check);
+
+        if(dekhbo[dest]>0) cout<<dekhbo[dest]<<endl;
+        else cout<<-1<<endl;
+    }
+
+
+    return 0;
+}
