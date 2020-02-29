@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+vector<ll> path[109];    
+bool dekhbo[109], check[109]; ///dekhbo will be true if we didn't entered a node & check will be true if hattori entered a node carring nakururu
+void dfs(ll n, ll dhukse){  /// n==current node; dhukse==1 if hattori entered in n no. node carring nakururu
+
+    ll limit=path[n].size();
+    for(ll i=0; i<limit; i++){
+        ll x=path[n][i];
+        if(dekhbo[x]==true){
+            if(check[x]==false && dhukse==0){
+                check[x]=true;
+                dfs(x, dhukse^1);
+            }
+            else if(check[x]==true && dhukse==1){
+                dfs(x, dhukse^1);
+            }
+        }
+        else{
+            dekhbo[x]=true;
+            if(dhukse==0) check[x]=true;
+            dfs(x, dhukse^1);
+        }
+
+    }
+
+
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, m, i, j, k, l;
+        cin>>n>>m;
+        for(i=1; i<=100; i++){
+            dekhbo[i]=check[i]=false;  //clear those for previous test cases
+             path[i].clear();
+        }
+        while(m--){
+            ll u, v;
+            scanf("%lld %lld", &u, &v);
+            path[u].eb(v); path[v].eb(u);
+        }
+        
+        dekhbo[1]=true;
+        dfs(1, 1);
+        ll ans=0;
+        for(i=1; i<=n ;i++) if(check[i]==true) ans++;
+        
+        
+        
+        printf("Case %lld: %lld\n",tc++, ans);
+
+
+
+
+
+    }
+    return 0;
+}
