@@ -1,0 +1,92 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+ll lalax[4]={0, 0, 1, -1}, lalay[4]={1, -1, 0, 0};  ///going up, down, right, left;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll m, n, i, j, k;
+        scanf("%lld %lld", &m, &n);
+        char s[m+5][n+5];
+        vector<ll> starx, stary, p, d;
+        ll star[m+2][n+2], level[m+2][n+2]; ///level means distance, star is 0 if we don't enter a '*', 1 means we entered just once
+        for(i=0; i<m; i++){
+            scanf("%s", s[i]);
+            for(j=0; j<n; j++){
+                star[i][j]=level[i][j]=0;
+                if(s[i][j]=='*'){ starx.eb(j); stary.eb(i); }///every star
+                else if(s[i][j]=='P'){  p.eb(j); p.eb(i); } ///starting position
+            }
+        }
+        
+        bool check[m][n]={}; ///have we entered any node yet?
+        
+        ll ans=0, flag=0;
+        check[p[1]][p[0]]=true;
+        queue<ll> qx, qy;
+        qx.push(p[0]); qy.push(p[1]);
+
+        while(qx.empty()==false){
+            ll x=qx.front(), y=qy.front();
+            if(s[y][x]=='*' && star[y][x]<2){  ///star==2 means we enterd twice here.we can go adjacent cells..we don't need to come here again
+                ll limit=starx.size();
+                ll dist=level[y][x], f=0;
+                for(i=0; i<limit; i++){
+                    if(starx[i]==x && stary[i]==y) continue;
+                    ll a=starx[i], b=stary[i];
+                           
+                    if(star[b][a]<2){
+                        if(level[b][a]>0) f=level[b][a];  ///it means there are few stars in same level
+                        star[b][a]=2; check[b][a]=true; level[b][a]=dist+1;
+                        qx.push(a); qy.push(b);
+                    }
+                }
+                star[y][x]=2;    ///if we enter any of this '*', we dont need to count those again
+                level[y][x]++;
+                qx.push(x); qy.push(y);
+                if(!f) level[y][x]++;   ///just came back into this star again..ita cost 2sec..now we can go into it's adjacent cells
+                qx.pop(); qy.pop();
+                continue;
+            }
+            for(i=0; i<4; i++){
+                ll a=x+lalax[i], b=y+lalay[i];
+                
+                if((b>=0 && b<m) && (a>=0 && a<n) && s[b][a]!='#'){
+                    if(s[b][a]=='D'){
+                        level[b][a]=level[y][x]+1;
+                        flag=level[b][a];
+                        break;
+                    }
+                    else if(s[b][a]=='*'){
+                        if(starx.size()>1 && check[b][a]==false){
+                            level[b][a]=level[y][x]+1;
+                            check[b][a]=true; star[b][a]=1;
+                            qx.push(a); qy.push(b);
+                        }
+                    }
+                    else if(check[b][a]==false){
+                        level[b][a]=level[y][x]+1;
+                        check[b][a]=true;
+                        qx.push(a); qy.push(b);
+                    }
+                }
+                if(flag) break;
+            }
+            if(flag) break;
+            qx.pop(); qy.pop();
+        }
+
+        printf("Case %lld: ", tc++);
+        if(flag>0) printf("%lld\n", flag);
+        else printf("impossible\n");
+        
+    }
+    return 0;
+}
