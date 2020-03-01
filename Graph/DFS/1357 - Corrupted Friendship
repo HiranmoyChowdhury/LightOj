@@ -1,0 +1,71 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+vector<ll> path[100007];
+ll ans=0;
+/// ekta node e koyta node hoye jawa jay & oi node theke koyta node e
+/// jawa jay...2 ta jinish er sum korlei pawa jabe, ei node ta koyta 
+/// node er shate pair korte parbe
+ll dfs(ll n, ll node, ll age){
+    ///node==current node; age==previous nodes, which are connected whith "node"
+    ll limit=path[node].size(), keep=0;
+    for(ll i=0; i<limit; i++)  keep+=dfs(n, path[node][i], age+1);
+    ans+=n-(keep+age);  ///how many nodes can make pair with current node;
+    return keep+1;
+}
+ll bfs(ll n){
+    queue<ll> q;
+    q.push(1);
+    ll ans=0;
+    bool check[n+5]={};
+    check[1]=true;
+    while(!q.empty()){
+        ll x=q.front();
+        ll limit=path[x].size();
+        for(ll i=0; i<limit; i++){
+            ll y=path[x][i];
+            if(check[y]==false){
+                check[y]=true;
+                q.push(y);
+                ans++;
+            }
+        }
+        q.pop();
+    }
+    return ans;
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ans=0;
+        ll n, i, j, k, l;
+        cin>>n;
+        for(i=0; i<=100006; i++) path[i].clear();
+        vector<ll> frnd[n+1];
+        for(i=0; i<n-1; i++){
+            ll u, v;
+            scanf("%lld %lld", &u, &v);
+            path[u].eb(v);   //making it one way path
+        }
+        
+        ll ans1=bfs(n);   // how many card were distributed
+        
+        ll ans2=dfs(n, 1, 1);   //counting those pair
+        
+        ans/=2;/// ekta pair 2 bar kore count hocce...
+        ///suppose, (2, 3) is a pair...when we are in node 2,
+        ///we will count 1 for (2, 3)..again if we are in node
+        ///3 we will count 1 for (3, 2);
+        
+        printf("Case %lld: %lld %lld\n", tc++, ans1, ans);
+        
+    }
+    return 0;
+}
