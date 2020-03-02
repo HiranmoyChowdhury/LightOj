@@ -1,0 +1,142 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+vector<ll> path[100007], mx_d[100007];
+bool check[100007];
+ll tot_node=0, lng_chain=0;
+
+ll dfs(ll n, ll take){
+    
+    tot_node++;
+    
+    check[n]=true;
+    
+    if(mx_d[n].size()<3) 
+        mx_d[n].eb(take);
+    else 
+        mx_d[n][2]=take;
+        
+    sort(mx_d[n].begin(), mx_d[n].end());
+    reverse(mx_d[n].begin(), mx_d[n].end());
+    
+    ll mx=0, limit=path[n].size();
+    
+    for(ll i=0; i<limit; i++){
+        ll x=path[n][i], ans;
+        
+        if(check[x]==false){
+            
+            ans=dfs(x, take+1);
+            
+            mx=max(mx, ans);
+            
+            if(mx_d[n].size()<3) mx_d[n].eb(ans);
+            else mx_d[n][2]=ans;
+            
+            sort(mx_d[n].begin(), mx_d[n].end());
+            reverse(mx_d[n].begin(), mx_d[n].end());
+        }
+    }
+    
+    if(mx_d[n].size()>1) lng_chain=max(mx_d[n][0]+mx_d[n][1], lng_chain);
+    else if(mx_d[n].size()==1) lng_chain=max(lng_chain, mx_d[n][0]);
+    
+    return mx+1;
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    
+    while(t--){
+        ll n, m, i, j;
+        
+        for(i=0; i<=100005; i++){ 
+            mx_d[i].clear();
+            path[i].clear();        ///making everything pure
+            check[i]=false; 
+        }
+        
+        
+        cin>>n>>m;
+        
+        for(i=0; i<m; i++){
+            ll u, v;
+            scanf("%lld %lld", &u,&v);
+            path[u].eb(v); path[v].eb(u);
+        }
+        
+        
+        vector<pair<ll,ll>> vec;
+        
+        for(i=1; i<=n; i++){
+            ///here could be many net....so, we will distict all net by check[i]..which is not connected sync_with_stdio
+            ///previous net....by, path[i].size() we will choose a node which is placed is a corner..so, implementation 
+            ///will be easiar........
+            if(path[i].size()<=1 && check[i]==false){
+                
+                lng_chain=0;  ///longest chain means maximum distance betn 2 random node..
+                tot_node=0;  ///total node in this net
+                
+                ll ans=dfs(i, 0);
+                
+                vec.eb(mp(lng_chain, tot_node));
+            }
+        }
+        sort(vec.begin(), vec.end());
+        reverse(vec.begin(), vec.end()); ///when the longest chain is max...our ans will get minimum
+        
+        
+        ll limit=vec.size();
+        
+        m=0;
+        
+        ll ans[100005];
+        
+        for(i=1; i<=100000; i++){   ///i means the number of iceland we will visit
+            
+            if(m>=limit){
+                ans[i]=-1;  ///its impossible to visit 'i' number of iceland...any of those net doesn't have 'i' number of iceland
+                continue;
+            }
+            
+            while(vec[m].second<i){
+                m++;
+                if(m>=limit) break;
+            }
+            
+            if(m>=limit){
+                ans[i]=-1;
+                continue;
+            }
+            
+            if(vec[m].first+1>=i) ans[i]=i-1;   ///we can visit our longest chain(lng_chain)
+            
+            else{
+                ll keep=i-(vec[m].first+1);
+                
+                ans[i]=(keep*2)+vec[m].first;  ///we have to get back into our lng_chain..so, it will cost double
+            }
+        }
+        
+        printf("Case %lld:\n", tc++);
+        ll q;
+        cin>>q;
+        while(q--){
+            
+            ll k;
+            scanf("%lld", &k);
+            
+            if(ans[k]<0) printf("impossible\n");
+            else printf("%lld\n", ans[k]);
+            
+        }
+    }
+
+    return 0;
+}
