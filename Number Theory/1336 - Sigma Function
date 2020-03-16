@@ -1,0 +1,38 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, i, j, k, l;
+        cin>>n;
+        // we will count odd number, then ans=n-odd;
+        ll odd=1;  //sod of 1 is odd
+        
+        ll sqt=sqrt(n);
+        
+        for(i=3; i<=sqt; i+=2){
+            ll num=i*i;     // for any i*i there will be odd number of divisors
+            while(num<=n){
+                num<<=1;
+                odd++;
+            }
+        }
+        ll power=2;
+        while(power<=n){
+            power<<=1;
+            odd++;  // for 2, 4, 8, 16,32.... there is only one odd divisor...that is '1'
+        }
+        ll ans=n-odd;
+        printf("Case %lld: %lld\n", tc++, ans);
+    }
+
+    return 0;
+}
