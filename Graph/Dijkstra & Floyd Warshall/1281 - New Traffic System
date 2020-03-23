@@ -1,0 +1,101 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, m, k, d, i, j;
+        cin>>n>>m>>k>>d;
+        vector<pair<ll, ll>> way[n+1], p_road[n+1];  // main road and proposed road
+        while(m--){
+            ll u, v, w;
+            scanf("%lld %lld %lld ", &u, &v, &w);
+            way[u].pb({v, w});
+        }
+        while(k--){
+            ll u, v, w;
+            scanf("%lld %lld %lld ", &u, &v, &w);
+            p_road[u].pb({v, w});
+        }
+        queue<pair<ll, ll>> q;  // two element..current node and how many road we already buid
+        queue<ll> qw;  // time to go in this current node
+        q.push({0, 0}); qw.push(0);
+        vector<pair<ll, ll>> dist[n+5]; // in how many way we can reach in current node
+        dist[0].pb({0, 0});
+        while(!q.empty()){
+            pair<ll, ll> top=q.front();
+            ll x=top.first, dd=top.second, w=qw.front();
+            ll limit=way[x].size();
+            for(i=0; i<limit; i++){ // we are working on those node which were build already
+                ll y=way[x][i].first, t=way[x][i].second;
+                ll jabe=dist[y].size();
+                bool flag=false;
+                for(j=0; j<jabe; j++){
+                    if(dist[y][j].second==dd){ // in dist there memory limit should not greater than 'd'
+                        flag=true;
+                        if(dist[y][j].first>w+t){
+                            dist[y][j].first=w+t;
+                            q.push({y, dd});
+                            qw.push(w+t);
+                        }
+                        break;
+                    }
+                }
+                if(flag==false){
+                    dist[y].pb({w+t, dd});
+                    q.push({y, dd});
+                    qw.push(w+t);
+                }
+            }
+            
+            limit=p_road[x].size();
+            
+            if(dd>=d){// if not then we will work on proposed node, because we can't build road greater than 'd'
+                q.pop(); qw.pop();
+                continue;
+            }
+            
+            for(i=0; i<limit; i++){  // here is our proposed road
+                ll y=p_road[x][i].first, t=p_road[x][i].second;
+                ll jabe=dist[y].size();
+                bool flag=false;
+                for(j=0; j<jabe; j++){
+                    if(dist[y][j].second==dd+1){
+                        flag=true;
+                        if(dist[y][j].first>w+t){
+                            dist[y][j].first=w+t;
+                            dist[y][j].second=dd+1; 
+                            q.push({y, dd+1});
+                            qw.push(w+t);
+                        }
+                        break;
+                    }
+                }
+                if(flag==false){
+                    dist[y].pb({w+t, dd+1});
+                    q.push({y, dd+1});
+                    qw.push(w+t);
+                }
+            }
+            q.pop(); qw.pop();
+            
+            
+        }
+        
+        ll ans=999999999999999;
+        for(i=0; i<dist[n-1].size(); i++){
+            ans=min(ans, dist[n-1][i].first);
+        }
+        if(ans>99999999999) printf("Case %lld: Impossible\n", tc++);
+        else printf("Case %lld: %lld\n", tc++, ans);
+    }
+
+    return 0;
+}
