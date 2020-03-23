@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, r, i, j, k;
+        cin>>n>>r;
+        vector<pair<ll, ll>> dist[5009];
+        
+        for(i=0; i<r; i++){
+            ll u, v, w;
+            scanf("%lld %lld %lld", &u, &v, &w);
+            dist[u].pb({v, w});
+            dist[v].pb({u, w});
+        }
+        
+        ll rem=999999999;
+        
+        vector<ll> s_p[n+5];  //shortest path
+        s_p[1].eb(0);
+        queue<ll> q;
+        q.push(1);
+        while(!q.empty()){
+            ll x=q.front();
+            ll limit=dist[x].size();
+            for(i=0; i<limit; i++){
+                
+                ll y=dist[x][i].first, w=dist[x][i].second;
+
+                bool flag=false, keep=false;
+
+                if(s_p[y].size()==0 || (s_p[y][0]!=s_p[x][0]+w && s_p[y].size()==1)) flag=true;
+                else if(s_p[y].size()>1 && s_p[y][0]!=s_p[x][0]+w && s_p[y][1]>s_p[x][0]+w) flag=true; // if y is useful flag is true
+
+                if(flag) keep=true;
+
+                if(s_p[y].size()<2 && flag){
+                    ll fst=s_p[x][0]+w;
+                    s_p[y].eb(fst);  // we are using only 2 room because of 2nd shortest path
+                }
+                else if(flag){
+                    ll fst=s_p[x][0]+w;
+                    s_p[y][1]=fst;
+                }
+                
+                sort(s_p[y].begin(), s_p[y].end());
+                
+                
+                flag=false;
+                if(s_p[x].size()>1){
+
+                    if(s_p[y].size()==0 || (s_p[y][0]!=s_p[x][1]+w && s_p[y].size()==1)) flag=true;
+                    else if(s_p[y].size()>1 && s_p[y][0]!=s_p[x][1]+w && s_p[y][1]>s_p[x][1]+w) flag=true;
+
+                    if(flag) keep=true;
+
+                    if(s_p[y].size()<2 && flag){
+                        ll fst=s_p[x][1]+w;
+                        s_p[y].eb(fst);
+                    }
+                    else if(flag){
+                        ll fst=s_p[x][1]+w;
+                        s_p[y][1]=fst;
+                    }
+                }
+                sort(s_p[y].begin(), s_p[y].end());
+                if(keep) q.push(y);
+            }
+            q.pop();
+        }
+
+
+        printf("Case %lld: %lld\n", tc++, s_p[n][1]);
+
+
+
+
+    }
+
+    return 0;
+}
