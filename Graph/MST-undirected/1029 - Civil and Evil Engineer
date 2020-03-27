@@ -1,0 +1,92 @@
+#include<bits/stdc++.h>
+#define bst             ios_base::sync_with_stdio(0);
+#define bug(x)          cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)       for(int i=a; i<=b; i++)
+#define ll              long long int
+#define eb              emplace_back
+#define pb              push_back
+#define mp              make_pair
+#define pi              pair<ll, ll>
+#define pq_pair         priority_queue<pi, vector<pi>, greater<pi>>
+using namespace std;
+class obj{
+	public :
+		ll v, w;
+	obj(ll a , ll b){
+	    w=a;	v=b;
+	}
+};
+class compare{
+	public :
+		bool operator () (obj &a , obj &b){
+			return a.w > b.w ;
+		}
+};
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n , i, j, k, l;
+        cin>>n;
+        vector<pair<ll, ll>> path[n+5];
+        while(1){
+            ll u , v, w;
+            scanf("%lld %lld %lld", &u, &v, &w);
+            if(u==0 && v==0 && w==0) break;
+            path[u].eb(v,w);
+            path[v].eb(u, w);
+        }
+        
+        
+        priority_queue<obj, vector<obj>, compare> q1; ///now it will be in increasing order
+        bool check[n+5]={};
+        q1.push({0, 0});
+        ll ans1=0;
+        while(q1.empty()==false){   ///finding mst
+            obj keep=q1.top();
+            q1.pop();
+            if(check[keep.v]==false){
+                check[keep.v]=true;
+                ans1+=keep.w;
+            }
+            else continue;
+            ll limit=path[keep.v].size();
+            for(i=0; i<limit; i++){
+                ll y=path[keep.v][i].first, ww=path[keep.v][i].second;
+                if(check[y]==false){
+                    q1.push({ww, y});
+                }
+            }
+        }
+        priority_queue<pair<ll,ll>> q2;
+        ll ans2=0;
+        q2.push({0, 0});
+        bool check2[n+5]={};
+        while(q2.empty()==false){///finding maximum spining tree
+            ll w=q2.top().first, x=q2.top().second;
+            q2.pop();
+            if(check2[x]==false){
+                check2[x]=true;
+                ans2+=w;
+            }
+            else continue;
+            ll limit=path[x].size();
+            for(i=0; i<limit; i++){
+                ll y=path[x][i].first, ww=path[x][i].second;
+                if(check2[y]==false){
+                    q2.push({ww, y});
+                }
+            }
+        }
+        
+        
+        
+        
+        ll ans=ans1+ans2;
+        
+        if(ans%2==0) printf("Case %lld: %lld\n", tc++, ans/2);
+        else printf("Case %lld: %lld/2\n", tc++, ans);
+    }
+    
+    return 0;
+}
