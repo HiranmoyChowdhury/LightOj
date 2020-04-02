@@ -1,0 +1,76 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+class obj{
+    public :
+        ll u;
+        ll w;
+    obj(ll c, ll a){
+        w=c, u=a;
+    }
+};
+class compare{
+    public :
+        bool operator () (obj &a , obj &b){
+            return a.w > b.w ;
+        }
+};
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, m, a, i, j, k;
+        cin>>n>>m>>a;
+        
+        vector<pair<ll,ll>> path[n+5];
+        
+        for(i=1; i<=m; i++){
+            ll u, v, w;
+            scanf("%lld%lld%lld", &u, &v, &w);
+            path[u].eb(w, v);
+            path[v].eb(w, u);
+        }
+        priority_queue<obj,vector<obj>, compare> pq;
+        
+        ll airport=0, cost=0;
+        
+        bool check[n+5]={};
+        
+        for(i=1; i<=n; i++){
+            if(check[i]==false){
+                pq.push({0, i});
+                airport++;  ///new part means a new airport
+                cost+=a;
+                while(!pq.empty()){
+                    ll x=pq.top().u, w=pq.top().w;
+                    pq.pop();
+                    if(check[x]==true) continue;
+                    if(w==a) airport++;   ///making a road cost>=airport cost, we should make a airport rather than road
+                    check[x]=true;
+                    cost+=w; 
+                    ll limit = path[x].size();
+                    for(j=0; j<limit ;j++){
+                        ll y=path[x][j].second, ww=path[x][j].first;
+                        if(check[y]==false){
+                            if(ww>=a){
+                                pq.push({a, y});
+                            }
+                            else pq.push({ww, y});
+                        }
+                    }
+                }
+            }
+        }
+        
+        printf("Case %lld: %lld %lld\n", tc++, cost, airport);
+        
+        
+    }
+    return 0;
+}
