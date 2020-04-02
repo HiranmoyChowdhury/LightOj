@@ -1,0 +1,81 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+class obj{
+    public :
+        ll u;
+        ll w;
+    obj(ll c, ll a){
+        w=c, u=a;
+    }
+};
+class compare{
+    public :
+        bool operator () (obj &a , obj &b){
+            return a.w > b.w ;
+        }
+};
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, i, j, k;
+        cin>>n;
+        ll arr[n+5][n+5];
+        for(i=1; i<=n; i++) for(j=1; j<=n; j++) scanf("%lld", &arr[i][j]);
+        
+        ll ans=0, total_wire=0;
+        
+        vector<pair<ll,ll>> path[n+5];
+        
+        for(i=1; i<=n; i++) for(j=1; j<=n; j++){
+            if(i==j || arr[i][j]==0) continue;
+            path[i].eb(arr[i][j], j);
+            path[j].eb(arr[i][j], i);
+            total_wire+=arr[i][j];
+        }
+        for(i=1; i<=n; i++) ans+=arr[i][i];   /// taking all value for room n to room n
+        
+        
+        
+        priority_queue<obj,vector<obj>, compare> pq;
+        
+        
+        
+        bool check[n+5]={};
+        pq.push({0, 1});
+        ll mst=0;
+        while(!pq.empty()){
+            ll u=pq.top().u, w=pq.top().w;
+            pq.pop();
+            if(check[u]==true) continue;
+            check[u]=true;
+            mst+=w;
+            ll limit=path[u].size();
+            for(i=0; i<limit ; i++){
+                ll x=path[u][i].second, ww=path[u][i].first;
+                if(check[x]==false) pq.push({ww, x});
+            }
+        }
+        
+        ans+=(total_wire-mst);
+        
+        
+        for(i=1; i<=n; i++) if(check[i]==false) ans=-1;
+        
+        
+        
+        printf("Case %lld: %lld\n", tc++, ans);
+        
+        
+        
+        
+    }
+    return 0;
+}
