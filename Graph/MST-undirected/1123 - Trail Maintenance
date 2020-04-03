@@ -1,0 +1,161 @@
+/// O(t*3*N*W) solution
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+vector<pair<ll, ll>> path[300];
+bool check[300];
+
+void find(ll u, ll v, ll w){  /// if both u and v are true, we will come here....
+    vector<ll> distance;
+    ll i, j, k, l;
+    vector<pair<ll, ll>> s_path[2000];
+    for(i=0; i<205; i++) distance.eb(99999999999);
+    queue<ll> q;
+    distance[u]=0;
+    q.push(u);
+    bool flag=false;
+    while(!q.empty()){  /// we will check if there is some connection betn u and v...
+        ll x=q.front();
+        if(x==v) flag=true;
+        ll limit=path[x].size();
+        for(i=0; i<limit; i++){
+            ll y=path[x][i].second, c=path[x][i].first;
+            if(distance[y]>distance[x]+c){
+                s_path[y].clear();
+                s_path[y].eb(c, x);
+                distance[y]=distance[x]+c;
+                q.push(y);
+            }
+            else if(distance[y]==distance[x]+c) s_path[y].eb(c, x);
+        }
+        q.pop();
+    }
+    if(flag==false){/// if there is no connection betn u and v, we will connect them
+        path[u].eb(w, v); path[v].eb(w, u);
+    }
+    else{  ///that means there is a connection..so, if we connect them again, we will make a circle..so, we 
+    /// will find out, the longest single edge...if it is greater than 'W' we will remove that edge..and connect 'u' and 'v'
+        q.push(v);
+        ll x, y, c=-1;
+        while(!q.empty()){
+            ll n=q.front();
+            ll limit=s_path[n].size();
+            for(i=0; i<limit; i++){
+                q.push(s_path[n][i].second);
+                if(s_path[n][i].first>c){
+                    c=s_path[n][i].first;
+                    x=n, y=s_path[n][i].second;
+                }
+            }
+            q.pop();
+        }
+        if(w<c){
+            path[u].eb(w, v); path[v].eb(w, u);
+            
+            
+            ll limit=path[x].size();
+            vector<pair<ll,ll>> temp;
+            for(i=0; i<limit ;i++){
+                if(path[x][i].second==y) continue;
+                temp.eb(path[x][i].first, path[x][i].second);
+            }
+            path[x].clear();
+            for(i=0; i<limit-1; i++){
+                path[x].eb(temp[i].first, temp[i].second);
+            }
+            
+            
+            
+            limit=path[y].size();
+            temp.clear();
+            for(i=0; i<limit ;i++){
+                if(path[y][i].second==x) continue;
+                temp.eb(path[y][i].first, path[y][i].second);
+            }
+            path[y].clear();
+            for(i=0; i<limit-1; i++){
+                path[y].eb(temp[i].first, temp[i].second);
+            }
+            
+        }
+    }
+    
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, w, i, j, k;
+        cin>>n>>w;
+        for(i=0; i<202; i++) path[i].clear(), check[i]=false;
+        printf("Case %lld:\n", tc++);
+        while(w--){
+            ll u, v, c;
+            scanf("%lld %lld %lld", &u, &v, &c);
+            bool flag=true;
+            ll limit = path[u].size();
+            for(i=0; i<limit ; i++){   ///if there already exist an path between u and v, compare them
+                if(path[u][i].second==v){
+                    flag=false;
+                    if(path[u][i].first>c){
+                        path[u][i].first=c;
+                        ll li=path[v].size();
+                        for(j=0; j<li; j++){
+                            if(path[v][j].second==u){
+                                path[v][j].first=c;
+                                break;
+                            }
+                        }
+                    }
+                    break;
+                }
+            }
+            if(flag){   ///if there is no path betn u and v....
+                if(check[u]==false || check[v]==false){ ///if we didn't entered atleast on of those node
+                    check[u]=check[v]=true;
+                    path[v].eb(c,u); path[u].eb(c, v);
+                }
+                else{ ///if both are true , go find the solution
+                    find(u, v, c);
+                }
+            }
+            
+            bool dekhi[300]={};
+            ll ans=0;
+            
+            queue<ll> q;
+            q.push(u);
+            dekhi[u]=true;
+            while(!q.empty()){
+                ll x=q.front();
+                ll limit=path[x].size();
+                for(i=0; i<limit; i++){
+                    ll y=path[x][i].second, ww=path[x][i].first;
+                    if(dekhi[y]==false){
+                        dekhi[y]=true;
+                        ans+=ww;
+                        q.push(y);
+                    }
+                }
+                q.pop();
+            }
+            
+            bool ok=false;
+            for(i=1; i<=n; i++) if(dekhi[i]==false) ok=true;
+            
+            
+            if(ok) printf("-1\n");
+            else printf("%lld\n", ans);
+            
+            
+        }
+        
+    }
+    return 0;
+}
