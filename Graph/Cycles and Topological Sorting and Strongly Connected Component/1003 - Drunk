@@ -1,0 +1,65 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll m, i, j, k, l, n=0;
+        cin>>m;
+        string str[100000];
+        map<string, ll> mp;
+        map<string, vector<string>> path, ulta;
+        while(m--){
+            string s1, s2;
+            cin>>s1>>s2;
+            if(!mp[s1]){
+                str[n++]=s1; ///taking all these various string
+                mp[s1]++;
+            }
+            if(mp[s2]==0) str[n++]=s2, mp[s2]++;
+            path[s1].eb(s2);
+            ulta[s2].eb(s1);   ///reverse path
+        }
+        
+        queue<string> q;
+        
+        map<string, ll> check;
+        
+        for(i=0; i<n; i++) if(ulta[str[i]].size()==0) q.push(str[i]); ///taking all there 0 index
+        
+        while(!q.empty()){
+            string s=q.front();
+            check[s]++;
+            ll limit=path[s].size();
+            for(i=0 ; i<limit ;i++){
+                string str1=path[s][i];
+                bool flag=false;
+                ll siz=ulta[str1].size();   ///we will check if there any other way we can get into this node, we won't take this node
+                for(j=0; j<siz; j++){
+                    string str2=ulta[str1][j];
+                    if(check[str2]==0){
+                        flag=true;
+                        break;
+                    }
+                }
+                if(!flag) q.push(str1);
+            }
+            q.pop();
+        }
+        bool flag=false;
+        for(i=0; i<n; i++) if(check[str[i]]==false) flag=true; ///if we can get all these nodes
+        
+        if(flag) printf("Case %lld: No\n", tc++);
+        else printf("Case %lld: Yes\n", tc++);
+        
+        
+    }
+    return 0;
+}
