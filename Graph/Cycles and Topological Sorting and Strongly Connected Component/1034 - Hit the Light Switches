@@ -1,0 +1,45 @@
+///topological sort
+
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+vector<ll> path[19999], top_sort;
+bool visit[19999];
+void dfs(ll n){
+    ll i, limit=path[n].size();
+    visit[n]=true;
+    for(i=0; i<limit; i++) if(!visit[path[n][i]]) dfs(path[n][i]);
+    top_sort.pb(n);
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, m, i, u, v, ans=0;
+        cin>>n>>m;
+        top_sort.clear();
+        for(i=0; i<n+5; i++) path[i].clear(), visit[i]=0;
+        while(m--){
+            scanf("%lld %lld", &u, &v);
+            path[u].eb(v);
+        }
+        for(i=1; i<=n; i++)  if(!visit[i])  dfs(i);
+        for(i=0; i<n+5; i++) visit[i]=0;
+        
+        reverse(top_sort.begin(), top_sort.end());
+        for(i=0; i<n; i++){
+            if(!visit[top_sort[i]]){
+                ans++;
+                dfs(top_sort[i]);  ///when we entered in DFS, we don't need to push_back in top_sort...it's for the first one
+            }
+        }
+        printf("Case %lld: %lld\n", tc++, ans);
+    }
+    return 0;
+}
