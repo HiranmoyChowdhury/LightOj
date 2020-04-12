@@ -1,0 +1,187 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define mp            make_pair
+using namespace std;
+vector<ll> path[59999], ulta[59999], st, scc[59990], top_srt;
+bool check[59999];
+ll cnt, pos[50099], cnt2, dp[50099];
+
+void dfs(ll n){
+    
+    ll limit=path[n].size();  check[n]=true;
+    
+    for(ll i=0; i<limit; i++){           ///dfs and dfs2 is for find SCC for each node
+        ll x=path[n][i];
+        if(check[x]==false) dfs(x);
+    }
+    
+    st.eb(n);
+}
+
+void dfs2(ll n){
+    ll limit=ulta[n].size();
+    check[n]=true;
+    
+    for(ll i=0; i<limit; i++)  
+    
+        if(check[ulta[n][i]]==false) 
+        
+            dfs2(ulta[n][i]);
+            
+            
+    scc[cnt].eb(n); pos[n]=cnt;
+}
+
+void dfs3(ll n){              ///dfs3 is for topological sort if SCC
+    ll limit1=scc[n].size();
+    check[n]=true;
+    
+    for(ll i=0; i<limit1; i++){
+        
+        ll x=scc[n][i];
+        ll limit2=path[x].size();
+        
+        for(ll j=0; j<limit2; j++){
+            
+            ll y=path[x][j];
+            if(check[pos[y]]==false)
+                dfs3(pos[y]);
+        }
+    }
+    
+    top_srt.eb(n);
+}
+
+ll dfs4(ll n){            ///finding longest chain of SCC
+    check[n]=true;
+    ll limit1=scc[n].size();
+    ll keep=limit1;
+    
+    for(ll i=0; i<limit1; i++){
+        ll x=scc[n][i];
+        ll limit2=path[x].size();
+        
+        for(ll j=0; j<limit2; j++){
+            ll y=path[x][j];
+            if(pos[x]==pos[y]) 
+                continue;
+                
+            if(check[pos[y]]==false) 
+                keep+=dfs4(pos[y]);
+                
+            else 
+                keep+=dp[pos[y]];
+        }
+        
+    }
+    
+    dp[n]=keep;
+    
+    return keep;
+    
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    
+    
+    while(t--){
+        ll n, i, j, k, l;
+        cin>>n;
+        for(i=0; i<=n; i++){
+            path[i].clear();
+            ulta[i].clear();
+        }
+        
+        st.clear();
+        
+        for(i=0; i<=n; i++){
+            check[i]=false;
+            scc[i].clear();
+            pos[i]=0;
+        }
+        
+        for(i=0; i<n; i++){
+            ll u, v;
+            scanf("%lld %lld", &u, &v);
+            path[u].eb(v);
+            ulta[v].eb(u);
+        }
+        
+        for(i=1; i<=n; i++) 
+            if(check[i]==false)
+                dfs(i);
+        
+        reverse(st.begin(), st.end());
+        
+        for(i=1; i<=n; i++) check[i]=0; 
+        
+        cnt=cnt2=0;
+        
+        for(i=0; i<n; i++){
+            if(check[st[i]]==false){
+                dfs2(st[i]);
+                cnt++;
+            }
+        }
+        
+        
+        for(i=0; i<=cnt; i++) check[i]=0;
+        
+        top_srt.clear();
+        
+        for(i=0; i<cnt; i++){
+            if(check[i]==false){
+                dfs3(i);
+            }
+        }
+        reverse(top_srt.begin(), top_srt.end());
+        
+        for(i=0; i<=cnt; i++) 
+            check[i]=0;
+            
+        ll martian=0, ans;
+        
+        for(i=0; i<cnt; i++){
+            
+            if(check[top_srt[i]]==false){
+                
+                ll keep=dfs4(top_srt[i]);
+                
+                if(keep>martian){
+                    martian=keep;
+                    sort(scc[top_srt[i]].begin(), scc[top_srt[i]].end());
+                    
+                    ans=scc[top_srt[i]][0];
+                }
+                
+                else if(keep==martian){
+                    
+                    sort(scc[top_srt[i]].begin(), scc[top_srt[i]].end());
+                    
+                    ans=min(ans, scc[top_srt[i]][0]);
+                    
+                }
+            }
+        }
+        
+        
+        
+        
+        printf("Case %lld: %lld\n", tc++, ans);
+        
+        
+        
+        
+    }
+    
+    
+    
+    
+    return 0;
+}
