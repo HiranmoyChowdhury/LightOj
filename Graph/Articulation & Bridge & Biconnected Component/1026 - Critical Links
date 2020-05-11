@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+using namespace std;
+vector<ll> edge[10999];
+bool check[100999];
+ll tim, d[10099], low[10099];
+map<pair<ll, ll>, bool> mp;
+vector<pair<ll, ll>> ans;
+void clear(ll n){
+    for(ll i=0; i<n; i++) check[i]=false, d[i]=low[i]=9999999999999;
+    for(ll i=0; i<n; i++) edge[i].clear();
+    mp.clear(); tim=0; ans.clear(); 
+}
+void go(ll root, ll node){           ///articulation bridge
+    check[node]=true;
+    
+    tim++;
+    
+    ll limit=edge[node].size();
+    
+    d[node]=low[node]=tim;
+    
+    for(ll i=0; i<limit; i++){
+        ll x=edge[node][i];
+        
+        if(mp[{node, x}]) continue;   ///we don't use a edge twice
+        
+        mp[{node, x}]=mp[{x, node}]=true;   
+        
+        
+        if(check[x]) low[node]=min(d[x], low[node]);
+        else{
+            go(root, x);
+            low[node]=min(low[x], low[node]);
+        }
+        
+        
+        if(d[node]<low[x])  ans.eb(min(node, x), max(node, x));  ///d[node]<low[x]...if they are equal, then we can travel 'node' from
+                                                                  /// subtree of x...if we remove node, it will work...but, for bridge it doesn't
+        
+    }
+    
+}
+void solve(){
+    ll n, i, j, k;
+    scanf("%lld", &n);
+    clear(n);
+    for(i=0; i<n; i++){  ///taking input
+        ll x;
+        scanf("%lld", &x);
+        string str;
+        cin>>str;
+        ll limit=str.size();
+        ll cnt=0;
+        for(j=1; j<limit-1; j++) cnt*=10, cnt+=(str[j]-'0');
+        while(cnt--){
+            ll y;
+            scanf("%lld",&y);
+            edge[x].eb(y);
+        }
+    }
+    for(i=0; i<n; i++){
+        if(check[i]==false) go(i, i);
+    }
+    
+    sort(ans.begin(), ans.end());
+    ll limit=ans.size(); 
+    printf("%lld critical links\n", limit);
+    for(i=0; i<limit; i++) printf("%lld - %lld\n", ans[i].first, ans[i].second);
+    
+    
+    
+}
+int main(){
+    ll t; 
+    cin>>t;
+    for(ll i=1; i<=t; i++){
+        printf("Case %lld:\n", i);
+        solve();
+    }
+    
+    return 0;
+}
+
