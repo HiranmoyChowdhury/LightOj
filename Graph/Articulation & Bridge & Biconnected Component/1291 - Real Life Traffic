@@ -1,0 +1,80 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+using namespace std;
+vector<ll> edge[20000];
+bool check[20000];
+ll d[20000], low[20000], tim=0;
+map<pair<ll, ll>, bool> mp;
+
+void clear(ll n){
+    for(ll i=0; i<n; i++) d[i]=low[i]=999999999999, check[i]=false, edge[i].clear();
+    mp.clear();
+}
+
+ll go(ll n){      ///bridge
+    check[n]=true;
+    tim++;
+    d[n]=low[n]=tim;
+    ll limit=edge[n].size(), cnt1=0, cnt2=0, cnt=0;
+    
+    for(ll i=0; i<limit; i++){
+        bool ok=false;
+        ll x=edge[n][i];
+        if(mp[{n, x}]) continue;
+        mp[{n, x}]=mp[{x, n}]=true;
+        
+        if(check[x]) low[n]=min(low[n], d[x]);
+        
+        else{
+            ll z=go(x);           ///finding every last node where we can get a cut edge
+            if(z) ok=true, cnt++;
+            cnt1+=z;
+            low[n]=min(low[n], low[x]);
+        }
+        
+        if(d[n]<low[x] && !ok) cnt1++;  ///if ok is false, means from x we didn't get any cut edge.so, if current edge is cut edge, just take it
+        else if(d[n]<low[x]) cnt2++;    ///our source is '0'..so, in some case '0' won't count in cut edge..so, we will check it
+        
+    }
+    
+    if(n==0 && cnt2==1 && cnt==1) cnt1++;   ///if '0' is cut edge
+    return cnt1;
+    
+}
+
+void solve(){
+   ll n, m , i ,j , k;
+   scanf("%lld %lld", &n , &m);
+   if(n==2){
+       printf("0\n");
+       return;
+   }
+   clear(n);
+   while(m--){
+       ll u, v;
+       scanf("%lld %lld", &u, &v);
+       edge[u].eb(v);
+       edge[v].eb(u);
+   }
+   
+   ll ans=go(0);
+   ans++;   ///for every 2 node we will need an edge to connect them..for 3 node it will be 2..for 4 it will be 2 also;
+   
+   printf("%lld\n", ans/2);
+   
+}
+int main(){
+    ll t;
+    cin>>t;
+    for(ll i=1; i<=t; i++){
+        printf("Case %lld: ", i);
+        solve();
+    }
+   
+    return 0;
+}
