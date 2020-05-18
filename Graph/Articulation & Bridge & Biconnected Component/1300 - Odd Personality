@@ -1,0 +1,105 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+using namespace std;
+vector<ll> edge[20000];
+bool check[20000], point[20000];
+map<pair<ll, ll>, bool> mp;
+ll d[20000];
+map<ll, bool> ok;
+map<ll, vector<ll>> dist;
+void all_clear(ll n){
+    for(ll i=0; i<n; i++) edge[i].clear(), check[i]=false;
+    mp.clear();
+    for(ll i=0; i<n; i++) point[i]=false, d[i]=999999999999;
+}
+ll go(ll n, ll take){  ///we will check every cycle and if it has an odd path, we will take a node from it
+    check[n]=true;
+    d[n]=take;
+    ll limit=edge[n].size();
+    for(ll i=0; i<limit; i++){
+        ll x=edge[n][i];
+        if(mp[{n, x}]==true) continue;
+        mp[{n, x}]=true; mp[{x , n}]=true;
+        if(check[x]==true){
+            if(d[x]%2==d[n]%2) point[n]=true;  ///taking one point
+        }
+        else{
+            take=go(x, take+1);
+        }
+    }
+    return take+1;
+}
+void dfs(ll n){   ///taking all path which can reach in the starting node
+    ll limit=edge[n].size();
+    for(ll i=0; i<limit;i++){
+        ll x=edge[n][i];
+        if(mp[{n,x}]) continue;
+        mp[{n,x}]=mp[{x,n}]=true;
+        if(ok[x]==true) dist[x].eb(n);
+        else{
+            ok[x]=true;
+            dist[x].eb(n);
+            dfs(x);
+        }
+    }
+}
+void again_go(vector<ll> vec, ll n){ 
+    ll limit=vec.size();
+    for(ll c=0; c<limit; c++){
+        ll x=vec[c];
+        if(point[x]) continue;
+        mp.clear(); ok.clear(); dist.clear();
+        ok[x]=true;
+        
+        dfs(x);
+        
+        queue<ll> q;
+        q.push(x);
+        point[x]=true;
+        while(!q.empty()){ ///playing BFS, and take all node which can made odd path
+            x=q.front();
+            ll lim=dist[x].size();
+            for(ll i=0; i<lim; i++){
+                ll y=dist[x][i];
+                if(point[y]==false){
+                    point[y]=true;
+                    q.push(y);
+                }
+            }
+            q.pop();
+        }
+    }
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, m , i, j, k;
+        scanf("%lld %lld", &n, &m);
+        all_clear(n);
+        while(m--){
+            ll u, v;
+            scanf("%lld %lld", &u, &v);
+            edge[u].eb(v); edge[v].eb(u);
+        }
+        for(i=0; i<n; i++){
+            if(check[i]==false) go(i, 1);
+        }
+        
+        vector<ll> vec;
+        for(i=0; i<n; i++){
+            if(point[i]) vec.eb(i);
+        }
+        mp.clear(); for(i=0; i<n; i++) check[i]=point[i]=false;
+        again_go(vec, n);
+        ll ans=0;
+        for(i=0; i<n; i++) if(point[i]) ans++;
+        printf("Case %lld: %lld\n", tc++, ans);
+        
+    }
+}
