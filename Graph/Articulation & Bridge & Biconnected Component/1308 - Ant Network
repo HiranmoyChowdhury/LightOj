@@ -1,0 +1,116 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            unsigned long long int
+#define eb            emplace_back
+#define pb            push_back
+#define flush         fflush(stdout);
+#define pi           pair<ll, ll>
+using namespace std;
+vector<ll> path[20000];
+bool check[20000];
+map<pi, bool> mp;
+ll d[20000], low[20000], ans1, keep1, keep2, cnt;
+unsigned long long ans2;
+void clear(ll n){
+    for(ll i=0; i<n; i++) check[i]=false, path[i].clear();
+    mp.clear();
+    for(ll i=0; i<n; i++) d[i]=low[i]=999999999999; ans1=0; ans2=1;
+}
+pi go(ll node, ll s){
+    ll limit=path[node].size(), i, j;
+    cnt++; check[node]=true;
+    d[node]=low[node]=cnt;
+    
+    ll ar_node=0, vis=0; bool flag=false, ff=false;;
+    ll lala=0;
+    vector<ll> vec1, vecz, vec;
+    
+    for(i=0; i<limit; i++){
+        ll x=path[node][i];
+        if(mp[{node, x}]) continue;
+        mp[{node, x}]=mp[{x, node}]=true;
+        
+        pi pp;
+        if(check[x]){
+            low[node]=min(low[node], d[x]); flag=true;
+        }
+        else{
+            pp=go(x, s);
+            low[node]=min(low[node], low[x]);
+            if(node!=s && d[node]<=low[x]){
+                if(pp.second==0 && pp.first) ans1+=1, ans2*=pp.first;
+                ff=true;
+            }
+            else if(node!=s && pp.first){
+                vis+=pp.first; lala+=pp.second;
+            }
+            if(node==s){
+                if(pp.second==0 && pp.first) vecz.eb(pp.first);
+                else if(pp.second==1 && pp.first) vec1.eb(pp.first);
+                else if(pp.second>1 && pp.first) vec.eb(pp.first);
+            }
+        }
+        ar_node++;
+    }
+    
+    if(ff) lala+=1;
+    if(vis || flag) vis++;
+    if(ar_node==0) ans1++;
+    if(node==s){
+       // cout<<vecz.size()<<endl;
+        bool kazu=false;
+        if(vec1.size()+vecz.size()+vec.size()==0 && ar_node==1){
+            ans1++;
+        }
+        else if(vec1.size()+vec.size()==0 && vecz.size()==1 && ar_node==1){
+            ans1+=2;
+            ll m=(vecz[0]*(vecz[0]+1))/2;
+            ans2*=m;
+            kazu=true;
+        }
+        else if(ar_node==1 && vecz.size()+vec.size()==0 && vec1.size()==1){
+            ll lim=vec1.size();
+            for(i=0; i<lim; i++){
+                ans1++;
+                ans2*=vec1[i];
+            }
+        }
+        if(!kazu){
+            ll lim=vecz.size();
+            for(i=0; i<lim; i++){
+                ans1++;
+                ans2*=vecz[i];
+            }
+        }
+    }
+    pi keep={vis, lala};
+    return keep;
+    
+}
+int main(){
+    ll t, tc=1; 
+    cin>>t;
+    while(t--){
+        ll n, m, i, j, k;
+        cin>>n>>m;
+        clear(n);
+        while(m--){
+            ll u, v;
+            cin>>u>>v;
+            path[u].eb(v);
+            path[v].eb(u);
+        } 
+        for(i=0; i<n; i++){
+            if(check[i]==false && path[i].size()>0){
+                cnt=0;
+                go(i, i);
+            }
+        }
+        printf("Case %llu: %llu %llu\n", tc++, ans1, ans2);
+        
+        
+    }
+    return 0;
+}
