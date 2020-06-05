@@ -1,0 +1,89 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+using namespace std;
+vector<ll> path[209]; ll pos[209];
+map<ll, map<ll, ll>> weight;
+void all_clear(){
+    for(ll i=0; i<209; i++) path[i].clear();
+    weight.clear();
+}
+ll bfs(){
+    bool check[209]={};
+    queue<ll> q;
+    q.push(0); check[0]=true;
+    while(!q.empty()){
+        ll x=q.front(); q.pop();
+        ll limit=path[x].size();
+        for(ll i=0; i<limit; i++){
+            ll y=path[x][i];
+            if(check[y]) continue;
+            if(weight[x][y]){
+                check[y]=true;
+                q.push(y);
+                pos[y]=x;
+                if(y==1) return true;
+            }
+        }
+    }
+    
+    return false;
+    
+    
+}
+int main(){
+    ll tt, tc=1; 
+    cin>>tt;
+    while(tt--){
+        ll n, i, j , k;
+        cin>>n;
+        all_clear();
+        for(i=1; i<=n; i++){
+            scanf("%lld", &k); ll u=i*2, v=(i*2)+1;   ///every node has his own capacity, so, we will divide it into two parts and capcity will be weight
+            path[u].eb(v); weight[u][v]=k;
+            path[v].eb(u);
+        }
+        ll m;
+        scanf("%lld", &m);
+        while(m--){
+            ll u, v, w;
+            scanf("%lld %lld %lld", &u, &v, &w);
+            u*=2; u++; v*=2;              ///because we devide every node into two
+            path[u].eb(v); weight[u][v]=w;
+            path[v].eb(u);
+        }
+        ll s, t; cin>>s>>t;
+        while(s--){
+            ll u; scanf("%lld", &u); u*=2; ///for so many source we will take a common source with infinite flow
+            path[0].eb(u); weight[0][u]=1000000;
+        }
+        while(t--){
+            ll u; scanf("%lld", &u); u*=2; u++; ///because of so many destination
+            path[u].eb(1); weight[u][1]=1000000;
+        }
+        ll ans=0;
+        while(bfs()){
+            ll x=1;
+            ll mn=100000000;
+            while(x!=0){
+                ll y=pos[x];
+                mn=min(weight[y][x], mn); x=y;
+            }
+            x=1;
+            while(x!=0){
+                ll y=pos[x];
+                weight[y][x]-=mn; weight[x][y]+=mn; x=y;
+            }
+            ans+=mn;   
+        }
+        printf("Case %lld: %lld\n", tc++, ans);
+        
+    }
+
+
+    return 0;
+}
