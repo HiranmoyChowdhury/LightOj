@@ -1,0 +1,99 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+using namespace std;
+string shirt[6]={"XXL", "XL", "L", "M", "S", "XS"};
+vector<ll> path[100];
+ll pos[100];
+vector<ll> permenent(100);
+map<ll, ll> jayga;
+ll bfs(ll node, ll lim, ll m){
+    bool check[100]={};
+    queue<ll> q;
+    q.push(node); check[node]=true;
+    while(!q.empty()){
+        ll x=q.front(); q.pop();
+        if(x<m){
+            ll limit=path[x].size();
+            for(ll i=0; i<limit; i++){
+                ll y=path[x][i];
+                if(check[y] || permenent[x]==y) continue;
+                pos[y]=x;
+                check[y]=true;
+                q.push(y);
+                if(jayga[y]<lim) return y;
+            }
+        }
+        else{
+            for(ll i=0; i<node; i++){
+                if(permenent[i]==x && check[i]==false){
+                    check[i]=true;
+                    pos[i]=x;
+                    q.push(i);
+                }
+            }
+        }
+    }
+    return -1;
+}
+void clear(){
+    for(ll i=0; i<100; i++) permenent[i]=-1, path[i].clear();
+    jayga.clear();
+}
+int main(){
+    ll t, tc=1;
+    cin>>t;
+    while(t--){
+        ll n, m , i , j, k;
+        cin>>n>>m;
+        clear();
+        bool ok=true;
+        for(i=0; i<m; i++){
+            string str1, str2; ll u, v;
+            cin>>str1>>str2;
+            for(j=0; j<6; j++){
+                if(str1==shirt[j]) u=j+m+1;
+                if(str2==shirt[j]) v=j+m+1;
+            }
+            path[i].eb(u); path[i].eb(v);
+            path[u].eb(i); path[v].eb(i);
+
+            ll x=bfs(i, n, m);
+            if(x==-1 || !ok){
+                ok=false; continue;
+            }
+            jayga[x]++;
+            while(x!=i){
+                ll y=pos[x];
+                if(x>m){
+                    permenent[y]=x;
+                }
+                x=y;
+            }
+        }
+        printf("Case %lld: ", tc++);
+        if(ok){
+            cout<<"YES\n";
+        }
+        else cout<<"NO\n";
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+    return 0;
+}
