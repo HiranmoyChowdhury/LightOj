@@ -1,0 +1,49 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            int
+#define eb            emplace_back
+#define pb            push_back
+using namespace std;
+ll value[500000], arr[200000], nax=9999999;
+void segment_tree(ll node, ll l, ll r){
+    if(l==r){
+        value[node]=arr[l];
+        return ;
+    }
+    ll mid=(l+r)>>1, node1=(node<<1), node2=(node<<1)+1;
+    segment_tree(node1, l, mid);
+    segment_tree(node2, mid+1, r);
+    value[node]=min(value[node1], value[node2]);
+}
+ll find(ll node, ll rl, ll rr, ll l, ll r){
+    if(rl<=l && rr>=r) return value[node];
+    
+    ll mid=(l+r)>>1, node1=(node<<1), node2=(node<<1)+1;
+    ll x=9999999;
+    if(l<=rr && mid>=rl) x=find(node1, rl, rr, l, mid);
+    ll y=9999999;
+    if(mid+1<=rr && r>=rl) y=find(node2, rl, rr, mid+1, r);
+    return min(x, y);
+}
+int main(){
+    ll t;
+    scanf("%d", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k, q;
+        scanf("%d %d", &n, &q);
+        for(i=1; i<=n; i++) scanf("%d", &arr[i]);
+        for(i=0; i<500000; i++) value[i]=9999999;
+        segment_tree(1, 1, n);
+        printf("Case %d:\n", cas);
+        for(k=0; k<q; k++){
+            ll l, r;
+            scanf("%d %d", &l, &r);
+            ll ans=find(1, l, r, 1, n);
+            
+            printf("%d\n", ans);
+        }
+    }
+    return 0;
+}
