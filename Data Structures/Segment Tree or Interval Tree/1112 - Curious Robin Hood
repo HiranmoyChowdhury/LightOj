@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            int
+#define eb            emplace_back
+#define pb            push_back
+using namespace std;
+ll value[500000], arr[200000], add, keep;
+void segment_tree(ll node, ll l, ll r){
+    if(l==r){
+        value[node]=arr[l];
+        return ;
+    }
+    ll mid=(l+r)>>1, node1=(node<<1), node2=(node<<1)+1;
+    segment_tree(node1, l, mid);
+    segment_tree(node2, mid+1, r);
+    value[node]=value[node1]+value[node2];
+}
+ll find(ll node, ll rl, ll rr, ll l, ll r){
+    if(rl<=l && rr>=r){
+        if(add) value[node]+=add;
+        ll carry=value[node];
+        if(keep) value[node]=0;
+        return carry;
+    }
+    if(l>rr || r<rl) return 0;
+    ll mid=(l+r)>>1, node1=(node<<1), node2=(node<<1)+1;
+    ll x=find(node1, rl, rr, l, mid);
+    ll y=find(node2, rl, rr, mid+1, r);
+    if(add)value[node]+=add;
+    else if(keep) value[node]-=x+y;
+    return x+y;
+}
+int main(){
+    ll t;
+    scanf("%d", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k, q;
+        scanf("%d %d", &n, &q);
+        for(i=1; i<=n; i++) scanf("%d", &arr[i]);
+        for(i=0; i<500000; i++) value[i]=9999999;
+        segment_tree(1, 1, n);
+        printf("Case %d:\n", cas);
+        for(k=0; k<q; k++){
+            ll l, r, v;
+            ll x; scanf("%d", &x);
+            if(x==1){
+                scanf("%d", &l); r=l=l+1; add=0, keep=1;
+                ll ans=find(1, l, r, 1, n);
+                printf("%d\n", ans);
+            }
+            else if(x==2){
+                scanf("%d %d", &l, &add); keep=0;
+                l=r=l+1;
+                find(1, l, r, 1, n);
+            }
+            else{
+                scanf("%d %d", &l, &r); l++; r++; add=keep=0;
+                ll ans=find(1, l, r, 1, n);
+                printf("%d\n", ans);
+            }
+            
+        }
+    }
+    return 0;
+}
