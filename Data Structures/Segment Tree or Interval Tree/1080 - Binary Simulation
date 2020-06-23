@@ -1,0 +1,61 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            int
+#define eb            emplace_back
+#define pb            push_back
+using namespace std;
+ll arr[100099], value[500000];
+ll rl, rr, carry;
+void init(ll n, ll l, ll r){
+    if(l==r){ value[n]=arr[l]; return ; }
+    ll mid=(l+r)>>1, n1=n<<1, n2=(n<<1)+1;
+    init(n1, l, mid); 
+    init(n2, mid+1, r);
+}
+ll ans(ll n, ll l, ll r){
+    if(l>rr || r<rl) return 0;
+    if(l>=rl && r<=rr){
+        value[n]^=carry;
+        return value[n];
+    }
+    ll mid=(l+r)>>1, n1=n<<1, n2=(n<<1)+1;
+    ll x=ans(n1, l, mid);
+    ll y=ans(n2, mid+1, r);
+    return x^y^value[n];
+}
+int main(){
+    ll t;
+    scanf("%d", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k, q;
+        string s;
+        cin>>s;
+        n=s.size();
+        
+        for(i=0; i<n; i++) arr[i+1]=s[i]-'0';
+        
+        for(i=0; i<500000; i++) value[i]=0;
+        
+        init(1, 1, n);
+        
+        printf("Case %d:\n", cas);
+        
+        scanf("%d", &q);
+        for(k=0; k<q; k++){
+            char ch; scanf("%c", &ch); ///for new line
+            scanf("%c", &ch);
+            if(ch=='I'){
+                scanf("%d %d", &rl, &rr); carry=1;
+                ans(1, 1, n);
+            }
+            else{
+                scanf("%d", &rl); rr=rl; carry=0;
+                printf("%d\n",ans(1, 1, n));
+            }
+        }
+        
+    }
+    return 0;
+}
