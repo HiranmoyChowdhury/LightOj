@@ -1,0 +1,75 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n);
+using namespace std;
+ll arr[200000], pos[1000000];
+void init(ll n, ll l, ll r){
+    if(l==r){
+        pos[n]=1;
+        return;
+    }
+    ll mid=(l+r)/2, n1=2*n, n2=(n*2)+1;
+    init(n1, l, mid); init(n2, mid+1, r);
+    pos[n]=pos[n1]+pos[n2];
+}
+ll find(ll n, ll l, ll r, ll x, ll carry){
+    if(l==r){
+        pos[n]--;
+        return arr[l];
+    }
+    ll mid=(l+r)/2, n1=2*n, n2=(n*2)+1;
+    ll keep;
+    if(carry+pos[n1]>=x && pos[n1]){
+        keep=find(n1, l, mid, x, carry);
+    }
+    else{
+        keep=find(n2, mid+1, r, x, carry+pos[n1]);
+    }
+    pos[n]=pos[n1]+pos[n2];
+    return keep;
+}
+int main(){
+    ll t;
+    scanf("%lld", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, q, i, j=0, m=0, k;
+        inp(n) inp(q);
+        vector<pair<ll,ll>> c;
+        for(i=0; i<n; i++) inp(arr[i+1]); j=m=n;
+        for(i=0; i<q; i++){
+            char ch;
+            cin>>ch>>k;
+            if(ch=='a'){
+                m++; j++;
+                arr[m]=k;
+            }
+            else{
+                if(k<=j) c.eb(k, j--);
+                else c.eb(k, -1);
+            }
+
+        }
+
+
+        init(1, 1, m);
+        ll siz=c.size();
+        printf("Case %lld:\n", cas);
+        for(i=0; i<siz; i++){
+            if(c[i].second==-1 || c[i].first<=0){
+                printf("none\n");
+                continue;
+            }
+            ll x=c[i].first;
+            ll ans=find(1, 1, m, x, 0);
+            printf("%lld\n", ans);
+        }
+
+
+    }
+    return 0;
+}
