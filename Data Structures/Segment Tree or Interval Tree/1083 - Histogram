@@ -1,0 +1,70 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n);
+using namespace std;
+ll arr[300000], mn[200000], lo, hi, ans, value, pos;
+void init(ll n, ll l, ll r){
+    if(l==r){
+        mn[n]=arr[l];
+        return ;
+    }
+    ll mid=(l+r)>>1, n1=n<<1, n2=(n<<1)+1;
+    init(n1, l, mid); init(n2, mid+1, r);
+    mn[n]=min(mn[n1], mn[n2]);
+}
+bool left(ll n, ll l, ll r){  ///find the nearest smaller element on the left 
+    if(l==r && mn[n]<value){
+        lo=l;
+        return true;
+    }
+    bool ok=false;
+    ll mid=(l+r)>>1, n1=n<<1, n2=(n<<1)+1;
+    if(mn[n2]<value && mid+1<pos){
+        ok=left(n2, mid+1, r);
+    }
+    if(mn[n1]<value && l<pos && !ok){
+        ok=left(n1, l, mid);
+    }
+    return ok;
+}
+bool right(ll n, ll l, ll r){ ///find the nearest smaller element on the right
+    if(l==r && mn[n]<value){
+        hi=l;
+        return true;
+    }
+    bool flag=false;
+    ll mid=(l+r)>>1, n1=n<<1, n2=(n<<1)+1;
+    if(mn[n1]<value && mid>pos){
+        flag=right(n1, l, mid);
+    }
+    if(mn[n2]<value && r>pos && !flag){
+        flag=right(n2, mid+1, r);
+    }
+    return flag;
+}
+
+int main(){
+    ll t;
+    scanf("%lld", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k;
+        inp(n)
+        
+        for(i=1 ; i<=n; i++) inp(arr[i]);
+        init(1, 1, n);
+        ans=0;
+        for(i=1; i<=n; i++){
+            lo=0, hi=n+1; value=arr[i]; pos=i;
+            left(1, 1, n);
+            right(1, 1, n);
+            ans=max(ans, (hi-lo-1)*arr[i]);
+        }
+        printf("Case %lld: %lld\n", cas, ans);
+    }
+    return 0;
+}
