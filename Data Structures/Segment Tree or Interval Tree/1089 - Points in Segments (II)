@@ -1,0 +1,65 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%d", &n);
+using namespace std;
+ll find1(ll l[], ll x, ll n){
+    ll lo=1, hi=n;
+    ll cholbe=50;
+    while(cholbe--){
+        ll mid=(lo+hi)/2;
+        if(l[mid]>x) hi=mid;
+        else lo=mid;
+    }
+    for(ll i=hi ; i>=lo; i--){
+        if(l[i]>x) hi=i;
+    }
+    if(l[hi]<=x) return 0;
+    return n-hi+1;
+    
+}
+ll find2(ll r[], ll x, ll n){
+    ll lo=1, hi=n;
+    ll cholbe=50;
+    while(cholbe--){
+        ll mid=(lo+hi)/2;
+        if(r[mid]<x) lo=mid;
+        else hi=mid;
+    }
+    for(ll i=lo ; i<=hi; i++){
+        if(r[i]<x) lo=i;
+    }
+    if(r[lo]>=x) return 0;
+    return lo;
+    
+    
+}
+int main(){
+    ll t;
+    scanf("%d", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, q, i, j, k;
+        inp(n) inp(q)
+        ll l[n+1], r[n+1];
+        for(i=1; i<=n; i++){
+            int a , b; inp(a) inp(b)
+            l[i]=a; r[i]=b;
+        }
+        sort(l+1, l+n+1); sort(r+1, r+1+n);
+        printf("Case %d:\n", cas);
+       
+        for(i=0; i<q; i++){
+            ll x;  inp(x);
+            ll ans=n;
+            ll z=find1(l, x, n);
+            ll y=find2(r, x, n);
+            ans-=y+z;
+            printf("%lld\n", ans);
+        }
+    }
+    return 0;
+}
