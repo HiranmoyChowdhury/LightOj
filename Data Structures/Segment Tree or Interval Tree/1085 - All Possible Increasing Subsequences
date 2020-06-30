@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n);
+using namespace std;
+ll arr[200000], brr[200000], combo[500000], mod=1000000007;
+bool ok;
+ll carry, value;
+ll query(ll n, ll l, ll r){
+    if(brr[r]<=value) return 0;
+    if(brr[l]>value) return combo[n];
+    ll mid=(l+r)/2, n1=n+n, n2=n+n+1;
+    return (query(n1, l, mid)+query(n2,mid+1, r))%mod;
+}
+void update(ll n, ll l, ll r){
+    if(brr[l]>value) return ;
+    if(brr[r]<value) return ;
+    if(l==r && brr[l]==value){
+        combo[n]+=carry;
+        combo[n]%=mod;
+        ok=true;
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+n+1;
+    if(!ok) update(n1, l, mid);
+    if(!ok) update(n2, mid+1, r);
+    combo[n]=combo[n1]+combo[n2];
+    combo[n]%=mod;
+}
+int main(){
+    ll t;
+    scanf("%lld", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k;
+        scanf("%lld", &n);
+        for(i=1; i<=n; i++) inp(arr[i]);
+        for(i=1; i<=n; i++) brr[i]=arr[i];
+        for(i=1; i<5*n; i++) combo[i]=0;
+        
+        sort(brr+1, brr+n+1);
+        for(i=n; i>0; i--){
+            value=arr[i];
+            carry=query(1, 1, n)+1; carry%=mod;
+            ok=false;
+            update(1, 1, n);
+        }
+        printf("Case %lld: %lld\n", cas, combo[1]);
+    }
+    return 0;
+}
