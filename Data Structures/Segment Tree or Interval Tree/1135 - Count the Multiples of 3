@@ -1,0 +1,79 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n);
+using namespace std;
+ll sum[400005][4], carry[400005];
+void carry_minati(ll keep, ll n, ll l, ll r){
+    if(l!=r){
+        carry[n+n]+=keep; carry[n+n+1]+=keep;
+    }
+    ll temp[4];
+    for(ll i=0; i<3; i++) temp[(i+keep)%3]=sum[n][i];
+    
+    for(ll i=0; i<3; i++) sum[n][i]=temp[i];
+}
+void update(ll n, ll l, ll r, ll a, ll b, ll keep){
+    if(l>b || r<a){
+        carry_minati(keep+carry[n], n, l, r);
+        carry[n]=0;
+        return;
+    }
+    if(l>=a && r<=b){
+        carry_minati(keep+carry[n]+1, n, l, r);
+        carry[n]=0;
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+n+1;
+    update(n1, l, mid, a, b, keep+carry[n]);
+    update(n2, mid+1, r, a, b, keep+carry[n]);
+    
+    for(ll i=0; i<3; i++) sum[n][i]=sum[n1][i]+sum[n2][i];
+    carry[n]=0;
+}
+ll query(ll n, ll l, ll r, ll a, ll b, ll keep){
+    if(l>b || r<a) return 0;
+    if(l>=a && r<=b){
+        for(ll i=0; i<3; i++){
+            if((i+keep+carry[n])%3==0) return sum[n][i];
+        }
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+n+1;
+    
+    ll x=query(n1, l, mid, a, b, keep+carry[n])+query(n2, mid+1, r, a, b, keep+carry[n]);
+    return x;
+}
+void all_set(ll n, ll l, ll r){
+    carry[n]=0;
+    if(l==r){
+        sum[n][1]=sum[n][2]=0;
+        sum[n][0]=1;
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+n+1;
+    all_set(n1, l, mid); all_set(n2, mid+1, r);
+    sum[n][1]=sum[n][2]=0;
+    sum[n][0]=sum[n1][0]+sum[n2][0];
+}
+int main(){
+    ll t;
+    scanf("%lld", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, q, i, j, k;
+        scanf("%lld %lld", &n, &q);
+        all_set(1, 0, n);
+        printf("Case %lld:\n", cas);
+        while(q--){
+            ll x, l, r;
+            scanf("%lld %lld %lld", &x, &l, &r);
+            if(!x) update(1, 0, n, l, r, 0);
+            
+            else  printf("%lld\n", query(1, 0, n, l, r, 0));
+        }
+    }
+    return 0;
+}
