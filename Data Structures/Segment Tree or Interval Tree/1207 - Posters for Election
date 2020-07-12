@@ -1,0 +1,85 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n);
+using namespace std;
+ll seg_tree[900000], carry[900000];
+void update(ll n, ll l, ll r, ll a, ll b, ll value, ll keep){
+    if(l>b || r<a){
+        keep=max(keep, carry[n]);
+        carry[n]=0;
+        if(l!=r){
+            carry[n+n]=max(carry[n+n], keep);
+            carry[n+n+1]=max(carry[n+n+1], keep);
+        }
+        seg_tree[n]=max(seg_tree[n], keep);
+        return;
+    }
+    if(l>=a && r<=b){
+        keep=max(keep, carry[n]);
+        carry[n]=0;
+        if(l!=r){
+            carry[n+n]=max(carry[n+n], value);
+            carry[n+n+1]=max(carry[n+n+1], value);
+        }
+        seg_tree[n]=max(seg_tree[n], value);
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+n+1;
+    update(n1, l, mid, a, b, value, max(keep, carry[n]));
+    update(n2, mid+1, r, a, b, value, max(keep, carry[n]));
+    carry[n]=0;
+    ll x=9999999999;
+    if(seg_tree[n1]) x=seg_tree[n1];
+    if(seg_tree[n2]) x=min(x, seg_tree[n2]);
+    seg_tree[n]=x;
+}
+ll find(ll n, ll l, ll r, ll a, ll b){
+    if(l>b || r<a) return 0;
+    if(l>=a && r<=b){
+        return max(seg_tree[n], carry[n]);
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+n+1;
+    ll x=find(n1, l, mid, a, b);
+    ll y=find(n2, mid+1, r, a, b);
+    ll ret=999999999999;
+    if(x){
+        ret=x;
+    }
+    if(y){
+        ret=min(ret, y);
+    }
+    ret=max(ret, carry[n]);
+    return ret;
+   
+}
+int main(){
+    ll t;
+    scanf("%lld", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k;
+        scanf("%lld", &n);
+        vector<pair<ll, ll>> q;
+        for(i=0; i<=8*n; i++) carry[i]=seg_tree[i]=0;
+        for(i=0; i<n; i++){
+            ll l, r;
+            scanf("%lld %lld", &l, &r);
+            q.eb(l, r);
+            update(1, 1, 2*n, l, r, i+1, 0);
+        }
+        ll ans=0;
+        for(i=0; i<n; i++){
+            ll l=q[i].first, r=q[i].second;
+            ll keep=find(1, 1, 2*n, l, r);
+            if(keep==i+1) ans++;
+        }
+       
+        printf("Case %lld: %lld\n", cas, ans);
+       
+    }
+    return 0;
+}
