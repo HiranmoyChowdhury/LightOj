@@ -1,0 +1,56 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n);
+using namespace std;
+ll seg_tree[6000000], value;
+bool check[2000000]={};
+void go(ll n, ll l, ll r){
+    if(l==r) seg_tree[n]=1;
+    else{
+        ll mid=(l+r)>>1, n1=n+n, n2=n+n+1;
+        go(n1, l, mid); go(n2, mid+1, r);
+        seg_tree[n]=seg_tree[n1]+seg_tree[n2];
+    }
+}
+void katbo(ll n, ll l, ll r, ll rem){
+    ll k=(seg_tree[n]+rem)/value;
+    if(!k || !seg_tree[n]) return;
+    if(l==r){
+        seg_tree[n]--;
+        check[l]=true;
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+n+1;
+    katbo(n2, mid+1, r, (rem+seg_tree[n1])%value);
+    katbo(n1, l , mid, rem);
+    seg_tree[n]=seg_tree[n1]+seg_tree[n2];
+}
+int main(){
+    ll i, j, k, lim=1429499, m=1;
+    ll l_num[200000];
+    go(1, 1, lim);
+    
+    for(i=2; i<=lim; i++){
+        if(check[i]==false){
+            l_num[m++]=i;
+            value=i;
+            katbo(1, 1, lim, 0);
+        }
+    }
+    l_num[1]=1;
+    
+    ll t;
+    scanf("%lld", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n;
+        scanf("%lld", &n);
+        printf("Case %lld: %lld\n", cas, l_num[n]);
+        
+    }
+    return 0;
+}
