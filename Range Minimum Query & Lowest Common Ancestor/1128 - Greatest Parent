@@ -1,0 +1,67 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n);
+using namespace std;
+vector<ll> path[100009];
+bool vis[100009];
+ll weight[100009];
+ll sp[100009][20], mn[100009][20];
+void sparse_table(ll n){
+    vis[n]=true;
+    if(n){
+        for(ll i=1; i<20; i++){
+            if(sp[sp[n][i-1]][i-1]!=-1){
+                sp[n][i]=sp[sp[n][i-1]][i-1];
+                mn[n][i]=weight[sp[n][i]];
+            }
+            else break;
+        }
+    }
+    ll limit=path[n].size();
+    
+    for(ll i=0; i<limit; i++){
+        ll x=path[n][i];
+        if(vis[x]) continue;
+        sp[x][0]=n;
+        mn[x][0]=weight[n];
+        sparse_table(x);
+    }
+}
+int main(){
+    ll t;
+    scanf("%lld", &t);
+    weight[0]=1;
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k, q, v;
+        scanf("%lld%lld", &n, &q);
+        for(i=0; i<=n; i++) vis[i]=false, path[i].clear();
+        for(i=0; i<=n; i++) for(j=0; j<20; j++) sp[i][j]=mn[i][j]=-1;
+        
+        for(i=1; i<n; i++){
+            ll p,s;
+            scanf("%lld%lld", &p, &s);
+            weight[i]=s;
+            path[p].eb(i);
+        }
+        
+        sparse_table(0);
+        
+        printf("Case %lld:\n", cas);
+        for(j=0; j<q; j++){
+            scanf("%lld%lld", &k, &v);
+            for(i=19; i>=0; i--){
+                if(sp[k][i]!=-1 && mn[k][i]>=v){
+                    k=sp[k][i];
+                }
+            }
+            printf("%lld\n", k);
+        }
+    }
+
+    return 0;
+}
