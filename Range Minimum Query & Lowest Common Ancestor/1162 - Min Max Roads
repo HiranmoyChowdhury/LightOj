@@ -1,0 +1,100 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%d", &n);
+using namespace std;
+vector<pair<ll, ll>> path[100009];
+bool vis[100009];
+ll sp[100009][20], mn[100009][20], mx[100009][20];
+ll level[100009];
+void sparse_table(ll n, ll lev){
+    vis[n]=true;
+    level[n]=lev;
+    if(n>1){
+        for(ll i=1; i<20; i++){
+            if(sp[sp[n][i-1]][i-1]==-1) break;
+            ll x=sp[n][i-1];
+            sp[n][i]=sp[x][i-1];
+
+            mn[n][i]=min( mn[n][i-1] , mn[x][i-1] );
+
+            mx[n][i]=max( mx[n][i-1] , mx[x][i-1] );
+        }
+    }
+
+    ll limit=path[n].size();
+
+    for(ll i=0; i<limit; i++){
+        ll x=path[n][i].first, w=path[n][i].second;
+        if(vis[x]) continue;
+        sp[x][0]=n;
+        mn[x][0]=mx[x][0]=w;
+
+        sparse_table(x, lev+1);
+    }
+}
+int main(){
+    ll t;
+    scanf("%d", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k;
+        scanf("%d", &n);
+        for(i=0; i<=n; i++) path[i].clear(), vis[i]=false;
+        for(i=1; i<n; i++){
+            ll u, v, w;
+            scanf("%d%d%d", &u, &v, &w);
+            path[u].eb(v, w);
+            path[v].eb(u, w);
+        }
+
+        for(i=0; i<=n; i++) for(j=0; j<20; j++) sp[i][j]=mn[i][j]=mx[i][j]=-1;
+
+        sparse_table(1, 1);
+        
+        ll q; inp(q)
+
+        printf("Case %d:\n", cas);
+
+        while(q--){
+            ll l, r;
+            scanf("%d%d", &l, &r);
+            ll ans1=9999999, ans2=0;
+
+            if(level[l]<level[r]) swap(l, r);
+
+            for(i=19; i>=0; i--){
+                if(sp[l][i]!=-1 && level[sp[l][i]]>=level[r]){
+
+                    ans1=min(ans1, mn[l][i]);
+                    ans2=max(ans2, mx[l][i]);
+                    l=sp[l][i];
+                }
+            }
+
+            for(i=19; i>=0; i--){
+
+                if(sp[l][i]!=-1 && sp[l][i]!=sp[r][i]){
+
+                    ans1=min({ans1, mn[l][i], mn[r][i]});
+                    ans2=max({ans2, mx[l][i], mx[r][i]});
+
+                    l=sp[l][i]; r=sp[r][i];
+                }
+            }
+
+            if(l!=r){
+
+                ans1=min({ans1, mn[l][0], mn[r][0]});
+                ans2=max({ans2, mx[l][0], mx[r][0]});
+            }
+
+            printf("%d %d\n", ans1, ans2);
+
+        }
+    }
+    return 0;
+}
