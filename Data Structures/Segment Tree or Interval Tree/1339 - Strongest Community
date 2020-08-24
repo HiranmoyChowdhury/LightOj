@@ -1,0 +1,81 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+vector<pair<ll, ll>> vec;
+ll arr[100099], st[400099], x, y, ans;
+void make(ll n, ll l, ll r){
+    if(l==r){
+        st[n]=arr[l];
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+1+n;
+    make(n1, l, mid); make(n2, mid+1, r);
+    st[n]=max(st[n1], st[n2]);
+}
+void query(ll n, ll l, ll r){
+    if(vec[l].first>y || vec[r].second<x) return;
+    else if(vec[l].first>=x && vec[r].second<=y){
+            ans=max(ans, st[n]);
+            return;
+    }
+    else if(l==r) return;
+ 
+    ll mid=(l+r)/2, n1=n+n, n2=n+1+n;
+    query(n1, l, mid); query(n2, mid+1, r);
+}
+int main(){
+    ll t;
+    scanf("%lld", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, c, q, i, j, k;
+        scanf("%lld%lld%lld", &n, &c, &q);
+        ll temp[n+1];
+        for(i=0; i<n; i++) inp(temp[i]);
+        ll pre=0, cnt=0; vec.clear();
+        for(i=0; i<n; i++){
+            if(i==n-1 || temp[i]!=temp[i+1]){
+                arr[cnt++]=i-pre+1;
+                vec.eb(pre, i);
+                pre=i+1;
+            }
+        }
+        c=vec.size();
+        make(1, 0, c-1);
+    printf("Case %lld:\n", cas);
+        while(q--){
+            scanf("%lld%lld", &x, &y);
+            x--; y--;
+            ans=1;
+            query(1, 0, c-1);
+ 
+            ll lo=0, hi=c-1;
+            ll cholo=30;
+            while(cholo--){
+                ll mid=lo+hi; mid/=2;
+                if(vec[mid].second>=x) hi=mid;
+                else lo=mid;
+            }
+            for(i=hi; i>=lo; i--) if(vec[i].second>=x) hi=i;
+            hi=min(vec[hi].second, y);
+            ans=max(ans, hi - x + 1);
+            lo=0, hi=c-1; cholo=30;
+            while(cholo--){
+                ll mid=(lo+hi)/2;
+                if(vec[mid].first<=y) lo=mid;
+                else hi=mid;
+            }
+            for(i=lo; i<=hi; i++) if(vec[i].first<=y) lo=i;
+            lo=max(vec[lo].first, x);
+            ans=max(ans, y-lo+1);
+            printf("%lld\n", ans);
+ 
+        }
+    }
+    return 0;
+}
