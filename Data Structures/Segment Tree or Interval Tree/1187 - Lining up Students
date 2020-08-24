@@ -1,0 +1,45 @@
+#include<bits/stdc++.h>
+#define bst           ios_base::sync_with_stdio(0);
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+ll st[500000], point;
+void clear(ll n, ll l, ll r){
+    st[n]=r-l+1;
+    if(l==r)   return;
+    ll mid=(l+r)/2, n1=n+n, n2=n+1+n;
+    clear(n1, l, mid); clear(n2, mid+1, r);
+}
+void update(ll n, ll l, ll r, ll num){
+    if(l==r){
+        point=l; st[n]=0;
+        return;
+    }
+    ll mid=(l+r)>>1, n1=n+n, n2=n+1+n;
+    if(st[n1]>=num && st[n1]>0) update(n1, l, mid, num);
+    else update(n2, mid+1, r, num-st[n1]);
+    st[n]=st[n1]+st[n2];
+}
+int main(){
+    ll t;
+    scanf("%lld", &t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, i, j, k;
+        scanf("%lld", &n);
+        ll student[n+5];
+        for(i=1; i<=n; i++) inp(student[i]);
+
+        clear(1, 1, n);
+
+        for(i=n; i>=1; i--){
+            ll x=student[i];
+            update(1, 1, n, x+1);
+        }
+        printf("Case %lld: %lld\n", cas, n-point+1);
+    }
+    return 0;
+}
