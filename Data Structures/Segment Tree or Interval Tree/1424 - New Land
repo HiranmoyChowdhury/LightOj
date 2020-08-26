@@ -3,7 +3,7 @@
   Key Idea: Segment tree
   SOLVE:
   at first, we will visit every column, and make an array for this. if we are in column 5 then we
-  take it as a left boundary, and check how many step we can go in the right from this position. save it to the
+  take it as a left boundary, and check how many step we can go in the right from this position. save it in the
   array. we will save it for every row in column 5. then we will run a segment tree to evaluate the biggest area 
   in this array.
   we will do this for every column. maximum area is the answer....
