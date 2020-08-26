@@ -1,0 +1,138 @@
+///    Hiranmoy Chowdhury(SEC)
+/*
+  Key Idea: Segment tree
+  SOLVE:
+  at first, we will visit every column, and make an array for this. if we are in column 5 then we
+  take it as a left boundary, and check how many step we can go in the right from this position. save it to the
+  array. we will save it for every row in column 5. then we will run a segment tree to evaluate the biggest area 
+  in this array.
+  we will do this for every column. maximum area is the answer....
+*/
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+string str[3000];
+bool st[3000][9000], ok;
+ll one, col, row;
+ll mn[9000], l_pos, r_pos;
+vector<ll> vec;
+void build(ll n, ll l, ll r){
+    if(l==r){
+        st[row][n]=str[row][l]-'0';
+        return;
+    }
+    ll mid=(l+r)>>1, n1=n+n, n2=n+1+n;
+    build(n1, l, mid); build(n2, mid+1, r);
+    st[row][n]=st[row][n1]|st[row][n2];
+}
+void query(ll n, ll l, ll r){
+    if(r<=col || st[row][n]==false) return ;
+    if(l==r && st[row][n]){
+        ok=true;
+        one=l;
+        return;
+    }
+    ll mid=(l+r)>>1, n1=n+n, n2=n+1+n;
+    if(!ok) query(n1, l, mid);
+    if(!ok) query(n2, mid+1, r);
+}
+void build2(ll n, ll l, ll r){
+    if(l==r){
+        mn[n]=vec[l];
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+1+n;
+    build2(n1, l, mid); build2(n2, mid+1, r);
+    mn[n]=min(mn[n1], mn[n2]);
+}
+void left(ll n, ll l, ll r){
+    ll i=row;
+    if(l>=i || mn[n]>=vec[i]) return;
+    if(l==r && mn[n]<vec[i]){
+        ok=true;
+        l_pos=l;
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+1+n;
+    left(n2, mid+1, r);
+    if(!ok) left(n1, l, mid);
+}
+void right(ll n, ll l, ll r){
+    ll i=row;
+    if(r<=i || mn[n]>=vec[i]) return;
+    if(l==r){
+        ok=true;
+        r_pos=r;
+        return;
+    }
+    ll mid=(l+r)/2, n1=n+n, n2=n+1+n;
+    right(n1, l, mid);
+    if(!ok) right(n2, mid+1, r);
+
+}
+ll process( ){
+    ll n=vec.size();
+    build2(1, 0, n-1);
+    ll ret=0;
+    for(ll i=0; i<n; i++){
+        ll x=vec[i];
+        ok=false;
+        l_pos=-1, r_pos=n;
+        row=i;
+        left(1, 0, n-1);
+        ok=false;
+        right(1, 0, n-1);
+        ret=max(ret, vec[i]*(r_pos-l_pos-1));
+    }
+    vec.clear();
+    return ret;
+}
+int main(){
+    ll t;
+    inp(t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, m, i, j, k;
+        inp(n); inp(m);
+        for(i=0; i<n; i++){
+            cin>>str[i];
+        }
+
+        for(i=0; i<n; i++){
+            row=i;
+            build(1, 0, m-1);
+        }
+        ll ans=0;
+        for(i=0; i<m; i++){
+            ll r=-1, pre=-1; col=i;
+            for(j=0; j<n; j++){
+                if(str[j][i]=='1'){
+                    pre=j;
+                    r=-1;
+                    if(vec.size()) ans=max(ans, process( ));
+                    continue;
+                }
+                ok=false;
+                one=m;
+                row=j;
+                query(1, 0, m-1);
+                if(r==-1) r=one;
+                else r=min(r, one);
+                vec.eb(one-i);
+            }
+            if(vec.size()){
+                    ans=max(ans, process( ));
+            }
+        }
+
+        printf("Case %lld: %lld\n", cas, ans);
+
+    }
+
+    return 0;
+}
