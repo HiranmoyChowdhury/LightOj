@@ -1,0 +1,85 @@
+///   Hiranmoy Chowdhury(SEC)
+
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+ll one[1109][1109], update[1109][1109];
+ll two_s[1105];
+ll process(ll x, ll y1, ll y2){
+        ll sum=0;
+        ll temp_y=y2+1;
+        while(temp_y>0){       ///prefix sum 0 to y2
+            sum+=update[x][temp_y];
+            ll keep=temp_y&two_s[temp_y];
+            temp_y-=keep;
+        }
+        temp_y=y1;
+        while(temp_y>0){   ///prefix sum 0 to y1-1
+            sum-=update[x][temp_y];
+            ll keep=temp_y&two_s[temp_y];
+            temp_y-=keep;
+        }
+    return sum;
+}
+int main(){
+    ll t;
+    inp(t);
+
+    ll zor=2047;
+    for(ll i=0; i<1105; i++){
+        two_s[i]=i^zor;
+        two_s[i]++;   ///2's complement
+    }
+
+    for(ll cas=1; cas<=t; cas++){
+        printf("Case %lld:\n", cas);
+        ll i, j, k, q;
+        for(i=0; i<=1105; i++) for(j=0; j<=1105; j++) one[i][j]=update[i][j]=0;
+        inp(q);
+        for(ll cholbe=0; cholbe<q; cholbe++){
+            inp(k);
+            if(!k){
+                ll x, y;
+                scanf("%lld%lld", &x, &y);
+                if(one[x][y]) continue;
+                one[x][y]=1;
+
+                ll s=x, e=x/32;
+                e++; e*=32;
+                ll temp=y+1;
+                for(i=s; i<e; i++){
+                    y=temp;
+                    while(y<=1024){
+                        update[i][y]++;
+                        ll keep=y&two_s[y];
+                        y+=keep;
+                    }
+                }
+            }
+            else{
+                ll x1, y1, x2, y2;
+                scanf("%lld%lld%lld%lld", &x1, &y1, &x2, &y2);
+                ll s=x1/32, e=x2/32;
+                s*=32; s+=31;
+                e*=32; e+=31;
+
+                ll ans=0;
+                for(i=s; i<=e; i+=32){
+                    ans+=process(i, y1, y2);
+                }
+                if(x1%32!=0) ans-=process(x1-1, y1, y2);
+                if((x2+1)%32!=0){
+                    ans-=(process(e, y1, y2)-process(x2, y1, y2));
+                }
+                printf("%lld\n", ans);
+            }
+        }
+    }
+    return 0;
+}
