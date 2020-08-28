@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+struct data{
+    ll a, b, in, ex;
+};
+int main(){
+    ll t;
+    inp(t);
+    for(ll cas=1; cas<=t; cas++){
+        ll n, r, p, i, j, k;
+        scanf("%lld%lld%lld", &n , &r, &p);
+        struct data path[r+10];
+
+        for(i=0; i<r; i++){
+            scanf("%lld%lld%lld%lld", &path[i].a, &path[i].b, &path[i].in, &path[i].ex);
+            path[i].ex*=p;
+            path[i].ex-=path[i].in;
+        }
+        ll income[n+5], expense[n+5];
+        for(i=1; i<=n; i++) income[i]=expense[i]=9999999999999; income[0]=expense[0]=0;
+        for(i=0; i<n; i++){
+            for(j=0; j<r; j++){
+                ll u=path[j].a, v=path[j].b, w=path[j].ex;
+                if(w+income[u]<income[v]){
+                    income[v]=w+income[u];
+                }
+            }
+        }
+
+        bool ok=false;
+        for(j=0; j<r; j++){
+            ll u=path[j].a, v=path[j].b, w=path[j].ex;
+            if(w+income[u]<income[v]){
+                income[v]=w+income[u];
+                ok=true;
+            }
+        }
+
+        printf("Case %lld: ", cas);
+        if(!ok) printf("NO\n");
+        else printf("YES\n");
+
+
+
+    }
+    return 0;
+}
