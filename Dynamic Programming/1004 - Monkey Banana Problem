@@ -1,0 +1,55 @@
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+ll n, dp[300][200], siz[300];
+ll arr[300][200];
+void solve(ll i, ll j){
+	if(i>=n+n || j>siz[i] || j<1){
+		dp[i][j]=0;
+		return;
+	}
+	if(i<n){
+		if(dp[i+1][j]==-1) solve(i+1, j);
+		if(dp[i+1][j+1]==-1) solve(i+1, j+1);
+		dp[i][j]=arr[i][j]+max(dp[i+1][j], dp[i+1][j+1]);
+	}
+	else{
+		if(dp[i+1][j]==-1) solve(i+1, j);
+		if(dp[i+1][j-1]==-1) solve(i+1, j-1);
+		dp[i][j]=arr[i][j]+max(dp[i+1][j], dp[i+1][j-1]);
+	}
+	
+}
+int main(){
+    ll t, tc=1;
+    inp(t);
+    while(t--){
+		inp(n);
+		ll i, j, k;
+		for(i=1; i<=n; i++){
+			for(j=1; j<=i; j++) inp(arr[i][j]);
+			siz[i]=i;
+		}
+		
+		for(i=n+1, k=n-1; i<n+n; i++, k--){ 
+		    for(j=1; j<=k; j++)  inp(arr[i][j]);
+		    siz[i]=k;
+		}
+		
+		for(i=1; i<=n+n; i++) for(j=1; j<=n+1; j++) dp[i][j]=-1;
+		
+		solve(1, 1);
+		
+		printf("Case %lld: %lld\n", tc++, dp[1][1]);
+		
+		
+		
+	}
+    return 0;
+}
