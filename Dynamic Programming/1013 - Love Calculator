@@ -18,6 +18,7 @@ ll f(ll n1, ll n2, ll num){
     }
     if(mem[n1][n2][num]!=-1) return mem[n1][n2][num];
     ll ret=0;
+    if(s1[n1]==s2[n2]) ret=f(n1+1, n2+1, num+1);
     else
        ret=f(n1+1, n2, num+1)+f(n1, n2+1, num+1);
     mem[n1][n2][num]=ret;
@@ -38,7 +39,7 @@ int main(){
        
         for(i=1; i<=sz1; i++){
             for(j=1; j<=sz2; j++){
-                if(s1[i-1]==s2[j-1]) arr[i][j]=arr[i-1][j-1]+1;  ///LCS
+                if(s1[i-1]==s2[j-1]) arr[i][j]=arr[i-1][j-1]+1; ///LCS
                 else arr[i][j]=max(arr[i-1][j], arr[i][j-1]);
             }
         }
