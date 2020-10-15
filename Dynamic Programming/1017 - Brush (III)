@@ -1,0 +1,60 @@
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+ll n, ans, mem[200][200], w, k;
+vector<pair<ll, ll>> vec;
+ll find_idx(ll num){
+    ll lo=0, hi=n;
+    ll cholbe=10;
+    while(cholbe--){
+        ll mid=(lo+hi)/2;
+        if(vec[mid].first<=num) lo=mid;
+        else hi=mid;
+    }
+    return hi;
+}
+ll f(ll node, ll move){
+    if(move==0) return 0;
+    if(node>=n) return 0;
+    if(mem[node][move]>-1) return mem[node][move];
+    ll num=vec[node].first;
+    ll idx=find_idx(num);
+    ll keep1=f(idx, move);
+    num=vec[node].first+w;
+    idx=find_idx(num);
+    ll keep2=f(idx, move-1)+idx-node;
+  
+    mem[node][move]=max(keep1, keep2);
+    ans=max(ans, mem[node][move]);
+    
+    return mem[node][move];
+}
+void solve( ){
+    inp(n); inp(w); inp(k);
+    vec.clear();
+    for(ll i=0; i<n; i++){
+        ll x, y;
+        inp(y); inp(x);
+        vec.eb(x, y);
+    }
+    sort(vec.begin(), vec.end());
+    ans=0; 
+    for(ll i=0; i<200; i++) for(ll j=0; j<200; j++) mem[i][j]=-1;
+    ll move=k;
+    f(0, move);
+    printf("%lld\n", ans);
+}
+int main(){
+    ll t;   inp(t);
+    for(ll cas=1; cas<=t; cas++){
+        printf("Case %lld: ", cas);
+       solve();
+    }
+    return 0;
+}
