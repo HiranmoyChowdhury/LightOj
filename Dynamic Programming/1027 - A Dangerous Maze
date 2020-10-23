@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+void solve( ){
+    ll n, i, j, k;
+    inp(n);
+    ll arr[n+1];
+    for(i=1; i<=n; i++) inp(arr[i]);
+    
+    ll pos=0, neg=0, cnt=0;
+    for(i=1; i<=n; i++){
+        if(arr[i]>0) pos+=arr[i];
+        else neg+=abs(arr[i]), cnt++;
+    }
+    if(cnt==n){
+        printf("inf\n");
+        return;
+    }
+    ll up=pos+neg, down=n-cnt;
+    ll g=__gcd(up, down);
+    printf("%lld/%lld\n", up/g, down/g);
+    
+    
+    
+    
+}
+int main(){
+    ll t;   inp(t);
+   
+    for(ll cas=1; cas<=t; cas++){
+        printf("Case %lld: ", cas);
+       solve();
+    }
+    return 0;
+}
