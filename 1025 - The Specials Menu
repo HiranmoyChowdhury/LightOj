@@ -1,0 +1,54 @@
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+ll mem[70][70];
+string str;
+ll f(ll cur, ll lo, ll hi){
+    ll keep=mem[lo][hi];
+    if(lo+1==hi) return 1;
+    if(mem[lo][hi]>-1 && cur==0) return keep;
+    
+    ll ret=1;
+    cur^=1;
+    if(!cur){
+        for(ll i=lo+1; i<hi; i++){
+            ret+=f(cur, i, hi);
+        }
+    }
+    
+    else{
+        for(ll i=lo+1; i<hi; i++){
+            if(str[i]==str[lo]) ret+=f(cur, lo, i);
+            
+        }
+        
+    }
+    
+    if(cur) mem[lo][hi]=ret;
+    return ret;
+    
+}
+int main(){
+    
+    ll t, tc=1;
+    inp(t);
+    while(t--){
+        ll n;
+        cin>>str;
+        n=str.size();
+        ll lo=-1, hi=n;
+        for(ll i=0; i<=60; i++) for(ll j=0; j<=60; j++) mem[i][j]=-1;
+        ll ans=f(1, lo, hi);
+        ans--;
+        
+        printf("Case %lld: %lld\n", tc++, ans);
+        
+    }
+    return 0;
+}
