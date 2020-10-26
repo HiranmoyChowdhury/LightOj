@@ -1,0 +1,41 @@
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+ll n, arr[200];
+double ans[200];
+void expected_value(ll node){
+    ll i, cnt=0;
+    double ret=0;
+    for(i=node+1; i<=node+6; i++){
+        if(i>n){
+            cnt++;
+            continue;
+        }
+        ret+=ans[i];
+    }
+    ret/=(6-cnt);
+    ans[node]=arr[node]+ret;
+   
+}
+int main(){
+    ll t, tc=1;
+    inp(t);
+    while(t--){
+        inp(n);
+        ll i, j, k;
+        for(i=1; i<=n; i++) inp(arr[i]);
+        ans[n]=arr[n];
+        for(i=n-1; i>0; i--){
+            expected_value(i);
+        }
+       
+        printf("Case %lld: %.6lf\n", tc++, ans[1]);
+    }
+    return 0;
+}
