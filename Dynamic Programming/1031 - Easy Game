@@ -1,0 +1,66 @@
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+ll arr[200];
+pair<ll, ll> mem[200][200];
+pair<ll, ll> f(ll lo, ll hi){
+    pair<ll, ll> ret; ret.first=ret.second=0;
+    if(lo>hi) return ret;
+    
+    ret=mem[lo][hi];
+    if(mem[lo][hi].first>-200000000) return ret;
+    
+    ret.first=ret.second=200000000;
+    ll l, r, sum=0, total=0;
+    for(ll i=lo; i<=hi; i++){
+        total+=arr[i];
+        pair<ll, ll> temp=f(i+1, hi);
+        if(temp.first<ret.second){
+            sum=total;
+            ret.first=temp.second;
+            ret.second=temp.first;
+        }
+    }
+    total=0;
+    for(ll i=hi; i>=lo; i--){
+        total+=arr[i];
+        pair<ll, ll> temp=f(lo, i-1);
+        if(temp.first<ret.second){
+            sum=total;
+            ret.first=temp.second;
+            ret.second=temp.first;
+        }
+    }
+    ret.first+=sum;
+    mem[lo][hi]=ret;
+    return ret;
+    
+}
+void solve(){
+    ll n, i, j, k;
+    inp(n);
+    for(i=1; i<=n; i++) inp(arr[i]);
+    
+    for(i=0; i<=100; i++) for(j=0; j<=100; j++) mem[i][j].first=mem[i][j].second=-200000000;
+    
+    pair<ll, ll> ans=f(1, n);
+    
+    ll pr=ans.first-ans.second;
+    printf("%lld\n", pr);
+    
+}
+int main(){
+    ll t, tc=1;
+    inp(t);
+    for(ll i=1; i<=t; i++){
+        printf("Case %lld: ", i);
+        solve();
+    }
+    return 0;
+}
