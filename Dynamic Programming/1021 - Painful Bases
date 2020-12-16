@@ -1,0 +1,84 @@
+#include<bits/stdc++.h>
+#define bst           (ios_base:: sync_with_stdio(false),cin.tie(NULL));
+#define bug(x)        cerr<<#x<<'='<<x<<endl;
+#define lp(i,a,b)     for(int i=a; i<=b; i++)
+#define ll            long long int
+#define eb            emplace_back
+#define pb            push_back
+#define inp(n)        scanf("%lld", &n)
+using namespace std;
+ll base, k;
+string str;
+ll siz, mem[65540][20];
+bool vis[65540];
+ll shakti[20][20];
+ll t, tc=1;
+ll c(char ch){
+    if(ch>='0' && ch<='9') return ch-'0';
+    else return ch-'A'+10;
+}
+ll bigmod(ll num, ll power){
+    if(power==0) return 1%k;
+    ll x=bigmod(num, power/2);
+    x=(x*x)%k;
+    if(power%2) x*=num;
+    return x%k;
+    
+}
+void f(ll check, ll num, ll cnt){
+    check^=(1<<num);
+    
+    if(vis[check]) return;
+    vis[check]=true;
+   
+    for(ll i=0; i<siz; i++){
+		char dhoro=str[i];
+        ll n1=c(dhoro);
+        if(!(check&(1<<n1))) continue;
+        f(check, n1, cnt-1);
+        for(ll j=0; j<k; j++){
+			ll b=base;
+            ll keep=j+((n1* (shakti[b][cnt-1]%k))%k);
+            keep%=k;
+            mem[check][keep]+=mem[check^(1<<n1)][j];
+        }
+    }
+}
+int main(){
+    inp(t);
+    mem[0][0]=1;
+    vis[0]=true;
+    for(ll i=0; i<=16; i++) for(ll j=0; j<16; j++) shakti[i][j]=pow(i, j);
+    
+    while(t--){
+		for(ll i=1; i<65540; i++) for(ll j=0; j<k; j++) mem[i][j]=0;
+		for(ll i=0; i<65540; i++) vis[i]=false;
+        scanf("%lld %lld", &base, &k);
+        cin>>str;
+        siz=str.size();
+        
+        
+        ll check=0;
+        for(ll i=0; i<siz; i++) check^=(1<<(c(str[i])));
+       
+        ll ans=0;
+        ll snt=siz-1;
+        
+        for(ll i=0; i<siz; i++){
+			char dhoro=str[i];
+            f(check, c(dhoro), snt);
+            
+            ll n1=c(dhoro);
+            for(ll j=0; j<20; j++){
+				ll b=base;
+                ll temp=j+(n1* (shakti[b][snt]%k));
+                temp%=k;
+                if(temp==0) ans+=mem[check^(1<<n1)][j];
+            }
+            
+        }
+        printf("Case %lld: %lld\n", tc++, ans);
+       
+    }
+    return 0;
+}
